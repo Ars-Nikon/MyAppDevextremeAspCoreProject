@@ -9,11 +9,13 @@
 
     <title>MyAppDevextremeAspCoreProject</title>
 
+    @*    <link rel="stylesheet" href="~/css/vendor.css" asp-append-version="true" />*@
+    <link rel="dx-theme" data-theme="material.blue.light" href="~/css/devextreme/dx.material.blue.light.css">
     <link rel="stylesheet" href="~/css/Site.css" />
-    <link rel="stylesheet" href="~/css/vendor.css" asp-append-version="true" />
     <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
     <script src="~/js/vendor.js" asp-append-version="true"></script>
     <script src="~/lib/fontawesome/all.js" crossorigin="anonymous"></script>
+    <script src="~/js/devextreme/localization/dx.messages.ru.js"></script>
 </head>
 
 <body class="sb-nav-fixed">
@@ -130,5 +132,8 @@
     </div>
     <script src="~/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="~/js/sidebarToggle.js"></script>
+    <script>
+        DevExpress.localization.locale("ru");
+    </script>
 </body>
 </html>

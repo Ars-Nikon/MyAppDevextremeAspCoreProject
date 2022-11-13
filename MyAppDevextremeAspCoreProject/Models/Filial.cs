@@ -10,7 +10,7 @@ namespace MyAppDevextremeAspCoreProject.Models
 {
     public class Filial
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         [Required]
         [MaxLength(80)]

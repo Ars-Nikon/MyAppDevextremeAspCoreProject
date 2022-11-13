@@ -10,7 +10,7 @@ namespace MyAppDevextremeAspCoreProject.Models
 {
     public class ScheduleTime
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
 
         [ForeignKey("TimeTable")]
