@@ -15,6 +15,7 @@ namespace MyAppDevextremeAspCoreProject.Models
         [Required]
         public DateTime Date { get; set; }
         [Required]
+        [ForeignKey("Employee")]
         public Guid IdEmployee { get; set; }
         public Employee? Employee { get; set; }
 

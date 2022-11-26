@@ -1,0 +1,38 @@
+﻿@using MyAppDevextremeAspCoreProject.Models
+<h2>Organization</h2>
+@(
+Html.DevExtreme().DataGrid<Organization>()
+    .ShowBorders(true)
+    .DataSource(d => d.Mvc()
+    .Controller("Organization")
+    .LoadAction("GetOrganizations")
+    .InsertAction("InsertOrganization")
+    .UpdateAction("UpdateOrganization")
+    .DeleteAction("DeleteOrganization")
+    .Key("Id"))
+    .Columns(columns =>
+    {
+        columns.AddFor(m => m.Id).Caption("Id").FormItem(x => x.Visible(false));
+        columns.AddFor(m => m.INN).Caption("ИНН").FormItem(x => x.Editor(y => y.NumberBox()));
+        columns.AddFor(m => m.Address).Caption("Адресс");
+        columns.AddFor(m => m.Name).Caption("Имя");
+        columns.AddFor(m => m.Phone).Caption("Номер телефона").FormItem(x => x.Editor(y => y.TextBox()));
+        columns.AddFor(m => m.FullNameOwner).Caption("ФИО владельца");
+    })
+   .Paging(p => p.PageSize(10))
+    .Pager(p => p
+        .ShowPageSizeSelector(true)
+        .AllowedPageSizes(new[] { 10, 25, 50, 100 })
+    )
+    .FilterRow(f => f.Visible(true))
+    .HeaderFilter(f => f.Visible(true))
+    .Editing(e => e.AllowAdding(true).AllowDeleting(true).AllowUpdating(true).Mode(GridEditMode.Form))
+    .Grouping(g => g.AutoExpandAll(false))
+    .RemoteOperations(true)
+    .Summary(s => s
+    .TotalItems(totalItems =>
+    {
+        totalItems.AddFor(m => m.Id).SummaryType(SummaryType.Count);
+    })
+    )
+    )

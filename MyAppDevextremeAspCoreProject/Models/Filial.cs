@@ -12,12 +12,15 @@ namespace MyAppDevextremeAspCoreProject.Models
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
+
         [Required]
         [MaxLength(80)]
         public string Name { get; set; } = null!;
 
         [Required]
-        public int PhoneAdmin { get; set; }
+        [MaxLength(11)]
+        [RegularExpression(@"79\d{9}", ErrorMessage = "Формат должен быть 79*********")]
+        public string PhoneAdmin { get; set; } = null!;
 
         [Required]
         public TimeSpan BeginningOfWork { get; set; }
@@ -34,7 +37,7 @@ namespace MyAppDevextremeAspCoreProject.Models
         public Guid IdOrganization { get; set; }
 
         public Organization? Organization { get; set; }
-        public List<Employee> Employees { get; set; } = new();
+        public List<EmployeeFilial> EmployeeFilials { get; set; } = new();
 
     }
 }

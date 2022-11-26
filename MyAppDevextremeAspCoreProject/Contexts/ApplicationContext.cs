@@ -11,8 +11,10 @@ namespace MyAppDevextremeAspCoreProject.Contexts
         public DbSet<Employee> Employees { get; set; } = null!;
         public DbSet<Filial> Filials { get; set; } = null!;
         public DbSet<ScheduleTime> ScheduleTimes { get; set; } = null!;
-        public DbSet<Speciality> Specialities { get; set; } = null!;
+        public DbSet<Service> Services { get; set; } = null!;
         public DbSet<TimeTable> TimeTables { get; set; } = null!;
+        public DbSet<EmployeeService> EmployeeServices { get; set; } = null!;
+
 
 
 
@@ -24,8 +26,9 @@ namespace MyAppDevextremeAspCoreProject.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            var sss = GenerateSeeds.GetOrganizations();
-            modelBuilder.Entity<Organization>().HasData(sss);
+            modelBuilder.Entity<EmployeeService>().HasKey(sc => new { sc.EmployeeId, sc.ServiceId });
+            modelBuilder.Entity<EmployeeFilial>().HasKey(sc => new { sc.EmployeeId, sc.FilialId });
+            modelBuilder.GenerateData();
         }
 
     }

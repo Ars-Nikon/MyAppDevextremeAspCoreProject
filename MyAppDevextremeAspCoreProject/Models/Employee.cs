@@ -28,13 +28,15 @@ namespace MyAppDevextremeAspCoreProject.Models
         public DateTime BirthDate { get; set; }
 
         [Required]
-        public int Phone { get; set; }
+        [MaxLength(11)]
+        [RegularExpression(@"79\d{9}", ErrorMessage = "Формат должен быть 79*********")]
+        public string Phone { get; set; } = null!;
 
         [Required]
         public Status Status { get; set; }
 
-        public List<Filial> Filials { get; set; } = new();
-        public List<Speciality> Specialities { get; set; } = new();
+        public List<EmployeeFilial> EmployeeFilials { get; set; } = new();
+        public List<EmployeeService> EmployeeServices { get; set; } = new();
     }
 
     public enum Status

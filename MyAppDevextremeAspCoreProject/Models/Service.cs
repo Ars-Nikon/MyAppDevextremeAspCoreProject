@@ -8,31 +8,24 @@ using System.Threading.Tasks;
 
 namespace MyAppDevextremeAspCoreProject.Models
 {
-    public class Speciality
+    public class Service
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         [Required]
-        [MaxLength(30)]
+        [MaxLength(100)]
         public string Name { get; set; } = null!;
 
         [Required]
-        [MaxLength(30)]
+        [MaxLength(200)]
         public string Description { get; set; } = null!;
 
         [Required]
-        [MaxLength(30)]
-        public decimal Price { get; set; }
+        public double Price { get; set; }
 
         [Required]
-        public Gender AcceptsGender { get; set; }
+        public TimeSpan TimeWork { get; set; }
 
-        public List<Employee> Employees { get; set; } = new();
-    }
-    public enum Gender
-    {
-        Woman = 0,
-        man = 1,
-        All = 2
+        public List<EmployeeService> EmployeeServices { get; set; } = new();
     }
 }
