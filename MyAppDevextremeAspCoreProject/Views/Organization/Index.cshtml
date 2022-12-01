@@ -16,8 +16,9 @@ Html.DevExtreme().DataGrid<Organization>()
         columns.AddFor(m => m.INN).Caption("ИНН").FormItem(x => x.Editor(y => y.NumberBox()));
         columns.AddFor(m => m.Address).Caption("Адресс");
         columns.AddFor(m => m.Name).Caption("Имя");
-        columns.AddFor(m => m.Phone).Caption("Номер телефона").FormItem(x => x.Editor(y => y.TextBox()));
+        columns.AddFor(m => m.Phone).Caption("Номер телефона").FormItem(x => x.Editor(y => y.TextBox().Mask(@"0 (000) 000-0000").MaskRules(new { X = new JS("/[02-9]/") })));
         columns.AddFor(m => m.FullNameOwner).Caption("ФИО владельца");
+        columns.AddFor(m => m.CreatedDate).SortOrder(SortOrder.Desc).Caption("Дата создания").SortOrder(SortOrder.Desc);
     })
    .Paging(p => p.PageSize(10))
     .Pager(p => p

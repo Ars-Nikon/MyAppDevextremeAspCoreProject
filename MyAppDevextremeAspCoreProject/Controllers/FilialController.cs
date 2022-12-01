@@ -12,11 +12,11 @@ using System;
 
 namespace MyAppDevextremeAspCoreProject.Controllers
 {
-    public class OrganizationController : Controller
+    public class FilialController : Controller
     {
         readonly ApplicationContext _appContext;
-        readonly ILogger<OrganizationController> _logger;
-        public OrganizationController(ApplicationContext applicationContext, ILogger<OrganizationController> logger)
+        readonly ILogger<FilialController> _logger;
+        public FilialController(ApplicationContext applicationContext, ILogger<FilialController> logger)
         {
             _appContext = applicationContext;
             _logger = logger;
@@ -27,13 +27,12 @@ namespace MyAppDevextremeAspCoreProject.Controllers
             return View();
         }
 
-
         [HttpGet]
-        public object GetOrganizations(DataSourceLoadOptions loadOptions)
+        public object GetFilials(DataSourceLoadOptions loadOptions)
         {
             try
             {
-                return DataSourceLoader.Load(_appContext.Organizations, loadOptions);
+                return DataSourceLoader.Load(_appContext.Filials, loadOptions);
             }
             catch (Exception ex)
             {
@@ -43,29 +42,29 @@ namespace MyAppDevextremeAspCoreProject.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateOrganization(Guid key, string values)
+        public async Task<IActionResult> UpdateFilial(Guid key, string values)
         {
             try
             {
-                var organization = await _appContext.
-                    Organizations.
+                var filial = await _appContext.
+                    Filials.
                     FirstOrDefaultAsync(o => o.Id == key);
 
-                if (organization == null)
+                if (filial == null)
                 {
                     return BadRequest("Id отсутствует");
                 }
 
-                if (!TryValidateModel(organization))
+                if (!TryValidateModel(filial))
                 {
                     return BadRequest(ModelState.GetFullErrorMessage());
                 }
 
-                JsonConvert.PopulateObject(values, organization);
+                JsonConvert.PopulateObject(values, filial);
 
                 await _appContext.SaveChangesAsync();
 
-                return Ok(organization);
+                return Ok(filial);
             }
             catch (Exception ex)
             {
@@ -76,22 +75,22 @@ namespace MyAppDevextremeAspCoreProject.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> InsertOrganization(string values)
+        public async Task<IActionResult> InsertFilial(string values)
         {
             try
             {
-                var organization = new Organization();
-                JsonConvert.PopulateObject(values, organization);
+                var filial = new Filial();
+                JsonConvert.PopulateObject(values, filial);
 
-                if (!TryValidateModel(organization))
+                if (!TryValidateModel(filial))
                 {
                     return BadRequest(ModelState.GetFullErrorMessage());
                 }
 
-                await _appContext.Organizations.AddAsync(organization);
+                await _appContext.Filials.AddAsync(filial);
                 await _appContext.SaveChangesAsync();
 
-                return Ok(organization);
+                return Ok(filial);
             }
             catch (Exception ex)
             {
@@ -101,20 +100,20 @@ namespace MyAppDevextremeAspCoreProject.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteOrganization(Guid key)
+        public async Task<IActionResult> DeleteFilial(Guid key)
         {
             try
             {
-                var organization = await _appContext
-                    .Organizations
+                var filial = await _appContext
+                    .Filials
                     .FirstOrDefaultAsync(o => o.Id == key);
 
-                if (organization == null)
+                if (filial == null)
                 {
                     return BadRequest("Id отсутствует");
                 }
 
-                _appContext.Organizations.Remove(organization);
+                _appContext.Filials.Remove(filial);
 
                 await _appContext.SaveChangesAsync();
 
@@ -124,21 +123,6 @@ namespace MyAppDevextremeAspCoreProject.Controllers
             {
                 _logger.LogError(ex, ex.Message);
                 return BadRequest(ex.Message);
-            }
-        }
-
-
-        [HttpGet]
-        public object GetOrganizationsLookup(DataSourceLoadOptions loadOptions)
-        {
-            try
-            {
-                return DataSourceLoader.Load(_appContext.Organizations, loadOptions);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                return ex.Message;
             }
         }
     }

@@ -1,0 +1,46 @@
+﻿@using MyAppDevextremeAspCoreProject.Models
+<h2>Filial</h2>
+@(
+Html.DevExtreme().DataGrid<Filial>()
+    .ShowBorders(true)
+    .DataSource(d => d.Mvc()
+    .Controller("Filial")
+    .LoadAction("GetFilials")
+    .InsertAction("InsertFilial")
+    .UpdateAction("UpdateFilial")
+    .DeleteAction("DeleteFilial")
+    .Key("Id"))
+    .Columns(columns =>
+    {
+        columns.AddFor(m => m.Id).Caption("Id").FormItem(x => x.Visible(false));
+        columns.AddFor(m => m.Name).Caption("Имя");
+        columns.AddFor(m => m.PhoneAdmin).Caption("Номер телефона").FormItem(x => x.Editor(y => y.TextBox().Mask(@"0 (000) 000-0000").MaskRules(new { X = new JS("/[02-9]/") })));
+        columns.AddFor(m => m.Address).Caption("Адресс");
+        columns.AddFor(m => m.IdOrganization).
+        Caption("Организация").Lookup(
+                     lookup => lookup
+                    .DataSource(d => d.Mvc().Controller("Organization").LoadAction("GetOrganizationsLookup").Key("Id"))
+                    .DisplayExpr("Name")
+                    .ValueExpr("Id").DataSourceOptions(x => x.Paginate(true).PageSize(20))
+                    );
+        columns.AddFor(m => m.BeginningOfWork).Caption("Начало работы").Format("HH:mm").FormItem(x => x.Editor(y => y.DateBox().Type(DateBoxType.Time)));
+        columns.AddFor(m => m.EndOfWork).Caption("Конец работы").Format("HH:mm").FormItem(x => x.Editor(y => y.DateBox().Type(DateBoxType.Time)));
+        columns.AddFor(m => m.CreatedDate).SortOrder(SortOrder.Desc).Caption("Дата создания").SortOrder(SortOrder.Desc);
+    })
+   .Paging(p => p.PageSize(10))
+    .Pager(p => p
+        .ShowPageSizeSelector(true)
+        .AllowedPageSizes(new[] { 10, 25, 50, 100 })
+    )
+    .FilterRow(f => f.Visible(true))
+    .HeaderFilter(f => f.Visible(true))
+    .Editing(e => e.AllowAdding(true).AllowDeleting(true).AllowUpdating(true).Mode(GridEditMode.Form))
+    .Grouping(g => g.AutoExpandAll(false))
+    .RemoteOperations(true)
+    .Summary(s => s
+    .TotalItems(totalItems =>
+    {
+        totalItems.AddFor(m => m.Id).SummaryType(SummaryType.Count);
+    })
+    )
+    )

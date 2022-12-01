@@ -28,6 +28,15 @@ namespace MyAppDevextremeAspCoreProject.Contexts
         {
             modelBuilder.Entity<EmployeeService>().HasKey(sc => new { sc.EmployeeId, sc.ServiceId });
             modelBuilder.Entity<EmployeeFilial>().HasKey(sc => new { sc.EmployeeId, sc.FilialId });
+
+            modelBuilder.Entity<Organization>()
+           .Property(b => b.CreatedDate)
+           .HasDefaultValueSql("getdate()");
+
+            modelBuilder.Entity<Filial>()
+           .Property(b => b.CreatedDate)
+           .HasDefaultValueSql("getdate()");
+
             modelBuilder.GenerateData();
         }
 

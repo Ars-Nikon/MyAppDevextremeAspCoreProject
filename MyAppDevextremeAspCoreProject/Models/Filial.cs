@@ -23,10 +23,12 @@ namespace MyAppDevextremeAspCoreProject.Models
         public string PhoneAdmin { get; set; } = null!;
 
         [Required]
-        public TimeSpan BeginningOfWork { get; set; }
+        [DataType(DataType.Time)]
+        public DateTime BeginningOfWork { get; set; }
 
         [Required]
-        public TimeSpan EndOfWork { get; set; }
+        [DataType(DataType.Time)]
+        public DateTime EndOfWork { get; set; }
 
         [Required]
         [MaxLength(250)]
@@ -35,6 +37,9 @@ namespace MyAppDevextremeAspCoreProject.Models
         [Required]
         [ForeignKey("Organization")]
         public Guid IdOrganization { get; set; }
+
+        [Required]
+        public DateTime CreatedDate { get; set; }
 
         public Organization? Organization { get; set; }
         public List<EmployeeFilial> EmployeeFilials { get; set; } = new();

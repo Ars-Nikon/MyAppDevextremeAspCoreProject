@@ -29,5 +29,7 @@ namespace MyAppDevextremeAspCoreProject.Models
         [Required(ErrorMessage = "Обязательное поле")]
         [MaxLength(250)]
         public string Address { get; set; } = null!;
+
+        public DateTime CreatedDate { get; set; }
     }
 }

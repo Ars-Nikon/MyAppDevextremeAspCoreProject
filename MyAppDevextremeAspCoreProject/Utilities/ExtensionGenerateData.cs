@@ -157,7 +157,7 @@ namespace MyAppDevextremeAspCoreProject.Utilities
 
             var faker = new Faker<Organization>("ru");
 
-            return faker.StrictMode(true)
+            return faker.StrictMode(false)
                  .RuleFor(x => x.Id, y => y.Database.Random.Uuid())
                  .RuleFor(x => x.Name, y => $"{y.Company.CompanySuffix()} {y.Company.CompanyName()}")
                  .RuleFor(x => x.INN, y => y.Random.Long(1000000000, 9999999999).ToString())
@@ -178,22 +178,22 @@ namespace MyAppDevextremeAspCoreProject.Utilities
                 throw new Exception($"{nameof(organizations)} is empty");
             }
 
-            var beginTimes = new TimeSpan[]
+            var beginTimes = new DateTime[]
             {
-                new TimeSpan(08, 00, 00),
-                new TimeSpan(09, 00, 00),
-                new TimeSpan(07, 00, 00),
-                new TimeSpan(07,30,00),
-                new TimeSpan(09,30,00)
+                new DateTime(1, 1, 1, 08, 00, 00),
+                new DateTime(1, 1, 1, 09, 00, 00),
+                new DateTime(1, 1, 1, 07, 00, 00),
+                new DateTime(1, 1, 1, 07,30,00),
+                new DateTime(1, 1, 1, 09,30,00)
             };
 
-            var endTimes = new TimeSpan[]
+            var endTimes = new DateTime[]
             {
-                new TimeSpan(20, 00, 00),
-                new TimeSpan(21, 00, 00),
-                new TimeSpan(22, 00, 00),
-                new TimeSpan(21,30,00),
-                new TimeSpan(22,30,00)
+                new DateTime(1, 1, 1, 20, 00, 00),
+                new DateTime(1, 1, 1, 21, 00, 00),
+                new DateTime(1, 1, 1, 22, 00, 00),
+                new DateTime(1, 1, 1, 21,30,00),
+                new DateTime(1, 1, 1, 22,30,00)
             };
 
 
