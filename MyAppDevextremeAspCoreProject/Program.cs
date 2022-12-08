@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MyAppDevextremeAspCoreProject.Contexts;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 string connection = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -7,7 +8,12 @@ string connection = builder.Configuration.GetConnectionString("DefaultConnection
 
 builder.Services
     .AddControllersWithViews()
-    .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = null;
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+    });
+
 
 builder.Services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(connection));
 

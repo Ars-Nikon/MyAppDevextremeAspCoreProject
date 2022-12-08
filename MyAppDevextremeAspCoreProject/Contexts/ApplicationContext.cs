@@ -37,6 +37,10 @@ namespace MyAppDevextremeAspCoreProject.Contexts
            .Property(b => b.CreatedDate)
            .HasDefaultValueSql("getdate()");
 
+            modelBuilder.Entity<Employee>()
+           .Property(b => b.CreatedDate)
+           .HasDefaultValueSql("getdate()");
+
             modelBuilder.GenerateData();
         }
 

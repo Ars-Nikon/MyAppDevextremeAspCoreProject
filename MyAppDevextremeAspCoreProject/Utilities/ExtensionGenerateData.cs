@@ -180,20 +180,20 @@ namespace MyAppDevextremeAspCoreProject.Utilities
 
             var beginTimes = new DateTime[]
             {
-                new DateTime(1, 1, 1, 08, 00, 00),
-                new DateTime(1, 1, 1, 09, 00, 00),
-                new DateTime(1, 1, 1, 07, 00, 00),
-                new DateTime(1, 1, 1, 07,30,00),
-                new DateTime(1, 1, 1, 09,30,00)
+                new DateTime(1970, 1, 1, 08, 00, 00),
+                new DateTime(1970, 1, 1, 09, 00, 00),
+                new DateTime(1970, 1, 1, 07, 00, 00),
+                new DateTime(1970, 1, 1, 07,30,00),
+                new DateTime(1970, 1, 1, 09,30,00)
             };
 
             var endTimes = new DateTime[]
             {
-                new DateTime(1, 1, 1, 20, 00, 00),
-                new DateTime(1, 1, 1, 21, 00, 00),
-                new DateTime(1, 1, 1, 22, 00, 00),
-                new DateTime(1, 1, 1, 21,30,00),
-                new DateTime(1, 1, 1, 22,30,00)
+                new DateTime(1970, 1, 1, 20, 00, 00),
+                new DateTime(1970, 1, 1, 21, 00, 00),
+                new DateTime(1970, 1, 1, 22, 00, 00),
+                new DateTime(1970, 1, 1, 21,30,00),
+                new DateTime(1970, 1, 1, 22,30,00)
             };
 
 
@@ -318,7 +318,6 @@ namespace MyAppDevextremeAspCoreProject.Utilities
                 .RuleFor(x => x.Patronymic, y => (y.Person.Gender == Bogus.DataSets.Name.Gender.Male ? y.PickRandom(malePatronymics) : y.PickRandom(femalePatronymics)))
                 .RuleFor(x => x.BirthDate, y => y.Person.DateOfBirth)
                 .RuleFor(x => x.Phone, y => y.Phone.PhoneNumber(@"79#########").ToString())
-                .RuleFor(x => x.Status, y => Status.Works)
                 .RuleFor(x => x.EmployeeFilials, y => y.PickRandom(filials, y.PickRandom(countFilialsInWork)).Select(x => new EmployeeFilial { FilialId = x.Id }).ToList())
                 .RuleFor(x => x.EmployeeServices, y => y.PickRandom(Services, y.PickRandom(countServicesInWork)).Select(x => new EmployeeService { ServiceId = x.Id }).ToList())
                 .Generate(5000)

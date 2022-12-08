@@ -1,22 +1,19 @@
 ﻿using DevExtreme.AspNet.Data;
-using DevExtreme.AspNet.Data.ResponseModel;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using MyAppDevextremeAspCoreProject.Contexts;
 using MyAppDevextremeAspCoreProject.Models;
 using MyAppDevextremeAspCoreProject.Utilities;
 using Newtonsoft.Json;
-using System;
 
 namespace MyAppDevextremeAspCoreProject.Controllers
 {
-    public class FilialController : Controller
+    public class EmployeeController : Controller
     {
         readonly ApplicationContext _appContext;
-        readonly ILogger<FilialController> _logger;
-        public FilialController(ApplicationContext applicationContext, ILogger<FilialController> logger)
+        readonly ILogger<EmployeeController> _logger;
+        public EmployeeController(ApplicationContext applicationContext, ILogger<EmployeeController> logger)
         {
             _appContext = applicationContext;
             _logger = logger;
@@ -28,11 +25,11 @@ namespace MyAppDevextremeAspCoreProject.Controllers
         }
 
         [HttpGet]
-        public object GetFilials(DataSourceLoadOptions loadOptions)
+        public object GetEmployees(DataSourceLoadOptions loadOptions)
         {
             try
             {
-                return DataSourceLoader.Load(_appContext.Filials, loadOptions);
+                return DataSourceLoader.Load(_appContext.Employees.Include(x => x.EmployeeFilials).ThenInclude(x => x.Filial), loadOptions);
             }
             catch (Exception ex)
             {
@@ -42,29 +39,29 @@ namespace MyAppDevextremeAspCoreProject.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateFilial(Guid key, string values)
+        public async Task<IActionResult> UpdateEmployee(Guid key, string values)
         {
             try
             {
-                var filial = await _appContext.
-                    Filials.
+                var employee = await _appContext.
+                    Employees.
                     FirstOrDefaultAsync(o => o.Id == key);
 
-                if (filial == null)
+                if (employee == null)
                 {
                     return BadRequest("Id отсутствует");
                 }
 
-                if (!TryValidateModel(filial))
+                if (!TryValidateModel(employee))
                 {
                     return BadRequest(ModelState.GetFullErrorMessage());
                 }
 
-                JsonConvert.PopulateObject(values, filial);
+                JsonConvert.PopulateObject(values, employee);
 
                 await _appContext.SaveChangesAsync();
 
-                return Ok(filial);
+                return Ok(employee);
             }
             catch (Exception ex)
             {
@@ -75,22 +72,22 @@ namespace MyAppDevextremeAspCoreProject.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> InsertFilial(string values)
+        public async Task<IActionResult> InsertEmployee(string values)
         {
             try
             {
-                var filial = new Filial();
-                JsonConvert.PopulateObject(values, filial);
+                var employee = new Employee();
+                JsonConvert.PopulateObject(values, employee);
 
-                if (!TryValidateModel(filial))
+                if (!TryValidateModel(employee))
                 {
                     return BadRequest(ModelState.GetFullErrorMessage());
                 }
 
-                await _appContext.Filials.AddAsync(filial);
+                await _appContext.Employees.AddAsync(employee);
                 await _appContext.SaveChangesAsync();
 
-                return Ok(filial);
+                return Ok(employee);
             }
             catch (Exception ex)
             {
@@ -100,20 +97,20 @@ namespace MyAppDevextremeAspCoreProject.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteFilial(Guid key)
+        public async Task<IActionResult> DeleteEmployee(Guid key)
         {
             try
             {
-                var filial = await _appContext
-                    .Filials
+                var employee = await _appContext
+                    .Employees
                     .FirstOrDefaultAsync(o => o.Id == key);
 
-                if (filial == null)
+                if (employee == null)
                 {
                     return BadRequest("Id отсутствует");
                 }
 
-                _appContext.Filials.Remove(filial);
+                _appContext.Employees.Remove(employee);
 
                 await _appContext.SaveChangesAsync();
 
@@ -123,21 +120,6 @@ namespace MyAppDevextremeAspCoreProject.Controllers
             {
                 _logger.LogError(ex, ex.Message);
                 return BadRequest(ex.Message);
-            }
-        }
-
-
-        [HttpGet]
-        public object GetFilialLookup(DataSourceLoadOptions loadOptions)
-        {
-            try
-            {
-                return DataSourceLoader.Load(_appContext.Organizations.Select(x => new { x.Name, x.Id }).Take(10), loadOptions);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                return ex.Message;
             }
         }
     }

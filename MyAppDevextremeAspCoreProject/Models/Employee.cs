@@ -33,17 +33,9 @@ namespace MyAppDevextremeAspCoreProject.Models
         public string Phone { get; set; } = null!;
 
         [Required]
-        public Status Status { get; set; }
+        public DateTime CreatedDate { get; set; }
 
         public List<EmployeeFilial> EmployeeFilials { get; set; } = new();
         public List<EmployeeService> EmployeeServices { get; set; } = new();
     }
-
-    public enum Status
-    {
-        Hidden = 0,
-        Works = 1,
-        Fired = 2,
-    }
-
 }

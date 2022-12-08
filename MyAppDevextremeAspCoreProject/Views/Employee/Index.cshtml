@@ -1,0 +1,85 @@
+﻿@using MyAppDevextremeAspCoreProject.Models
+<h2>Employee</h2>
+@(
+Html.DevExtreme().DataGrid<Employee>()
+                            .ShowBorders(true)
+                            .DataSource(d => d.Mvc()
+                            .Controller("Employee")
+                            .LoadAction("GetEmployees")
+                            .InsertAction("InsertEmployee")
+                            .UpdateAction("UpdateEmployee")
+                            .DeleteAction("DeleteEmployee")
+                            .Key("Id"))
+                            .Columns(columns =>
+                            {
+                                columns.AddFor(m => m.Id).Caption("Id").FormItem(x => x.Visible(false));
+                                columns.AddFor(m => m.Name).Caption("Имя");
+                                columns.AddFor(m => m.Surname).Caption("Фамилия");
+                                columns.AddFor(m => m.Patronymic).Caption("Отчество");
+                                columns.AddFor(m => m.BirthDate).Caption("Дата рождения");
+                                columns.AddFor(m => m.Phone).Caption("Номер телефона").FormItem(x => x.Editor(y => y.TextBox().Mask(@"0 (000) 000-0000").MaskRules(new { X = new JS("/[02-9]/") })));
+                                columns.AddFor(m => m.EmployeeFilials).DataField("EmployeeFilials").Caption("Филилал").CalculateFilterExpression("FilialCalculateFilterExpression").CalculateDisplayValue(new JS("FilialCalculateDisplay"));
+                                columns.AddFor(m => m.CreatedDate).SortOrder(SortOrder.Desc).Caption("Дата создания").FormItem(x => x.Visible(false));
+                            }).OnEditorPreparing("onEditorPreparing")
+   .Paging(p => p.PageSize(10))
+    .Pager(p => p
+        .ShowPageSizeSelector(true)
+        .AllowedPageSizes(new[] { 10, 25, 50, 100 })
+    )
+    .FilterRow(f => f.Visible(true))
+    .HeaderFilter(f => f.Visible(true))
+    .Editing(e => e.AllowAdding(true).AllowDeleting(true).AllowUpdating(true).Mode(GridEditMode.Form))
+    .Grouping(g => g.AutoExpandAll(false))
+    .RemoteOperations(true)
+    .Summary(s => s
+    .TotalItems(totalItems =>
+    {
+        totalItems.AddFor(m => m.Id).SummaryType(SummaryType.Count);
+    })
+    )
+    )
+
+<script>
+    function FilialCalculateDisplay(rowData) {
+        var result = rowData.EmployeeFilials.$values.map(function (item) {
+            return item.Filial.Name;
+        }).join(',');
+        return result;
+    }
+
+    function onEditorPreparing(e) {
+        if ((e.parentType === "dataRow" || e.parentType === "filterRow") && e.dataField === "EmployeeFilials") {
+            e.editorName = "dxTagBox"
+            e.editorOptions.dataSource = getProducts(),
+                e.editorOptions.showSelectionControls = true;
+            e.editorOptions.displayExpr = "Name";
+            e.editorOptions.valueExpr = "Id";
+            e.editorOptions.value = e.value || [];
+            e.editorOptions.onValueChanged = function (args) {
+                e.setValue(args.value);
+            }
+        }
+    }
+    function getProducts() {
+        return {
+            store: DevExpress.data.AspNet.createStore({
+                key: "Id",
+                loadUrl: '@Url.Action("GetFilialLookup", "Filial")',
+            }),
+            paginate: true,
+            pageSize: 20
+        };
+    }
+
+    function FilialCalculateFilterExpression(filterValues, selectedFilterOperation) {
+        return function (itemData) {
+            var array1 = itemData.EmployeeFilials.$values;
+            var array2 = filterValues;
+
+            if (array2.length === 0)
+                return true;
+
+            return array1.length === array2.length && array1.every(function (value, index) { return value.FilialId === array2[index] })
+        };
+    }
+</script>
