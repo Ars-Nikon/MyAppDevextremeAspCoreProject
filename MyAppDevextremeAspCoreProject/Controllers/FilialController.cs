@@ -132,7 +132,7 @@ namespace MyAppDevextremeAspCoreProject.Controllers
         {
             try
             {
-                return DataSourceLoader.Load(_appContext.Organizations.Select(x => new { x.Name, x.Id }).Take(10), loadOptions);
+                return DataSourceLoader.Load(_appContext.Filials, loadOptions);
             }
             catch (Exception ex)
             {

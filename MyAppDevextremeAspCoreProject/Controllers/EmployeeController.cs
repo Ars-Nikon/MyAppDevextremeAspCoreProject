@@ -29,7 +29,11 @@ namespace MyAppDevextremeAspCoreProject.Controllers
         {
             try
             {
-                return DataSourceLoader.Load(_appContext.Employees.Include(x => x.EmployeeFilials).ThenInclude(x => x.Filial), loadOptions);
+                var dataSourceLoader = DataSourceLoader.Load(_appContext.Employees.Include(x => x.EmployeeFilials), loadOptions);
+                var data = dataSourceLoader.data.Cast<Employee>().ToList();
+                data.ForEach(x => { x.GuidFilials = x.EmployeeFilials.Select(x => x.FilialId).ToList(); });
+                dataSourceLoader.data = data;
+                return dataSourceLoader;
             }
             catch (Exception ex)
             {

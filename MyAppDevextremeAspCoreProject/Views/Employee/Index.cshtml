@@ -18,9 +18,13 @@ Html.DevExtreme().DataGrid<Employee>()
                                 columns.AddFor(m => m.Patronymic).Caption("Отчество");
                                 columns.AddFor(m => m.BirthDate).Caption("Дата рождения");
                                 columns.AddFor(m => m.Phone).Caption("Номер телефона").FormItem(x => x.Editor(y => y.TextBox().Mask(@"0 (000) 000-0000").MaskRules(new { X = new JS("/[02-9]/") })));
-                                columns.AddFor(m => m.EmployeeFilials).DataField("EmployeeFilials").Caption("Филилал").CalculateFilterExpression("FilialCalculateFilterExpression").CalculateDisplayValue(new JS("FilialCalculateDisplay"));
+                                columns.AddFor(m => m.GuidFilials).DataField("GuidFilials.$values").Caption("Филилал").Lookup(lookup => lookup
+                                .DataSource(d => d.Mvc().Controller("Filial").LoadAction("GetFilialLookup").Key("Id"))
+                                .ValueExpr("Id")
+                                .DisplayExpr("Name")).CellTemplate(new JS("cellTemplate"))
+                                .CalculateFilterExpression("calculateFilterExpression").EditCellTemplate(new TemplateName("TagBoxTemplate"));
                                 columns.AddFor(m => m.CreatedDate).SortOrder(SortOrder.Desc).Caption("Дата создания").FormItem(x => x.Visible(false));
-                            }).OnEditorPreparing("onEditorPreparing")
+                            })
    .Paging(p => p.PageSize(10))
     .Pager(p => p
         .ShowPageSizeSelector(true)
@@ -39,47 +43,38 @@ Html.DevExtreme().DataGrid<Employee>()
     )
     )
 
+@using (Html.DevExtreme().NamedTemplate("TagBoxTemplate"))
+{
+    @(Html.DevExtreme().TagBox()
+                            .DataSource(d => d.Mvc().Controller("Filial").LoadAction("GetFilialLookup").Key("Id")).DataSourceOptions(x => x.Paginate(true))
+                .Value(new JS("value"))
+                    .ValueExpr("Id")
+                    .DisplayExpr("Name")
+                .ShowSelectionControls(true)
+                .MaxDisplayedTags(3)
+                .ShowMultiTagOnly(false)
+                .ApplyValueMode(EditorApplyValueMode.UseButtons)
+                .SearchEnabled(true)
+                .OnValueChanged("function(e) { setValue(e.value); }")
+                .OnSelectionChanged("function(e) { component.updateDimensions(); }")
+            )
+}
+
+
 <script>
-    function FilialCalculateDisplay(rowData) {
-        var result = rowData.EmployeeFilials.$values.map(function (item) {
-            return item.Filial.Name;
-        }).join(',');
-        return result;
+    function cellTemplate(container, options) {
+        var noBreakSpace = "\u00A0",
+            text = (options.value || []).map(element => {
+                return options.column.lookup.calculateCellValue(element);
+            }).join(", ");
+        container.text(text || noBreakSpace).attr("title", text);
     }
-
-    function onEditorPreparing(e) {
-        if ((e.parentType === "dataRow" || e.parentType === "filterRow") && e.dataField === "EmployeeFilials") {
-            e.editorName = "dxTagBox"
-            e.editorOptions.dataSource = getProducts(),
-                e.editorOptions.showSelectionControls = true;
-            e.editorOptions.displayExpr = "Name";
-            e.editorOptions.valueExpr = "Id";
-            e.editorOptions.value = e.value || [];
-            e.editorOptions.onValueChanged = function (args) {
-                e.setValue(args.value);
-            }
+    function calculateFilterExpression(filterValue, selectedFilterOperation, target) {
+        if (target === "search" && typeof (filterValue) === "string") {
+            return [this.dataField, "contains", filterValue]
         }
-    }
-    function getProducts() {
-        return {
-            store: DevExpress.data.AspNet.createStore({
-                key: "Id",
-                loadUrl: '@Url.Action("GetFilialLookup", "Filial")',
-            }),
-            paginate: true,
-            pageSize: 20
-        };
-    }
-
-    function FilialCalculateFilterExpression(filterValues, selectedFilterOperation) {
-        return function (itemData) {
-            var array1 = itemData.EmployeeFilials.$values;
-            var array2 = filterValues;
-
-            if (array2.length === 0)
-                return true;
-
-            return array1.length === array2.length && array1.every(function (value, index) { return value.FilialId === array2[index] })
-        };
+        return function (data) {
+            return (data.AssignedEmployee || []).indexOf(filterValue) !== -1
+        }
     }
 </script>

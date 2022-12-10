@@ -35,6 +35,9 @@ namespace MyAppDevextremeAspCoreProject.Models
         [Required]
         public DateTime CreatedDate { get; set; }
 
+        [NotMapped]
+        public List<Guid> GuidFilials { get; set; } = new();
+
         public List<EmployeeFilial> EmployeeFilials { get; set; } = new();
         public List<EmployeeService> EmployeeServices { get; set; } = new();
     }
