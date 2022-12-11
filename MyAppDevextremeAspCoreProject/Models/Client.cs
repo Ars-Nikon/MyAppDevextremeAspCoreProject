@@ -28,9 +28,15 @@ namespace MyAppDevextremeAspCoreProject.Models
         public DateTime BirthDate { get; set; }
 
         [Required]
-        public int Phone { get; set; }
+        [MaxLength(11)]
+        [RegularExpression(@"79\d{9}", ErrorMessage = "Формат должен быть 79*********")]
+        public string? Phone { get; set; }
 
-        [MaxLength(30)]
+        [MaxLength(50)]
+        [RegularExpression(@"^[\d\w._-]+@[\d\w._-]+\.[\w]+$", ErrorMessage = "Email is invalid")]
         public string? Email { get; set; }
+
+        [Required]
+        public DateTime CreatedDate { get; set; }
     }
 }

@@ -19,5 +19,8 @@ namespace MyAppDevextremeAspCoreProject.Models
         public Guid IdEmployee { get; set; }
         public Employee? Employee { get; set; }
 
+        [Required]
+        public DateTime CreatedDate { get; set; }
+
     }
 }

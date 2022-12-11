@@ -29,5 +29,8 @@ namespace MyAppDevextremeAspCoreProject.Models
 
         [Required]
         public TimeSpan EndTime { get; set; }
+
+        [Required]
+        public DateTime CreatedDate { get; set; }
     }
 }

@@ -131,6 +131,7 @@ namespace MyAppDevextremeAspCoreProject.Utilities
 "Ярославович" };
         public static void GenerateData(this ModelBuilder modelBuilder)
         {
+            var clients = GetClients();
             var organizations = GetOrganizations();
             var filials = GetFilials(organizations);
             var services = GetServices();
@@ -150,8 +151,25 @@ namespace MyAppDevextremeAspCoreProject.Utilities
             modelBuilder.Entity<Employee>().HasData(employees);
             modelBuilder.Entity<EmployeeService>().HasData(employeeServices);
             modelBuilder.Entity<EmployeeFilial>().HasData(employeeFilials);
+            modelBuilder.Entity<Client>().HasData(clients);
         }
 
+        private static IEnumerable<Client> GetClients()
+        {
+
+            var faker = new Faker<Client>("ru");
+
+            return faker.StrictMode(false)
+                .RuleFor(x => x.Id, y => y.Database.Random.Uuid())
+                .RuleFor(x => x.Name, y => y.Person.FirstName)
+                .RuleFor(x => x.Surname, y => y.Person.LastName)
+                .RuleFor(x => x.Patronymic, y => (y.Person.Gender == Bogus.DataSets.Name.Gender.Male ? y.PickRandom(malePatronymics) : y.PickRandom(femalePatronymics)))
+                .RuleFor(x => x.BirthDate, y => y.Person.DateOfBirth)
+                .RuleFor(x => x.Phone, y => y.Phone.PhoneNumber(@"79#########").ToString())
+                .RuleFor(x => x.Email, y => y.Person.Email)
+                .Generate(5000)
+                .ToList();
+        }
         private static IEnumerable<Organization> GetOrganizations()
         {
 
