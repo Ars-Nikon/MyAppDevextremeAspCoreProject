@@ -8,11 +8,11 @@ namespace MyAppDevextremeAspCoreProject.Models
         [Required]
         [ForeignKey("Employee")]
         public Guid EmployeeId { get; set; }
-        public Employee Employee { get; set; } = null!;
+        public Employee? Employee { get; set; }
 
         [Required]
         [ForeignKey("Filial")]
         public Guid FilialId { get; set; }
-        public Filial Filial { get; set; } = null!;
+        public Filial? Filial { get; set; }
     }
 }

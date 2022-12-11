@@ -39,7 +39,7 @@ namespace MyAppDevextremeAspCoreProject.Models
         public List<Guid> GuidFilials { get; set; } = new();
 
         [NotMapped]
-        public string FilialsName { get; set; } = null!;
+        public string? FilialsName { get; set; }
 
         public List<EmployeeFilial> EmployeeFilials { get; set; } = new();
         public List<EmployeeService> EmployeeServices { get; set; } = new();

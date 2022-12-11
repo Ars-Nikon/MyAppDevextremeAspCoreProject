@@ -98,6 +98,7 @@ namespace MyAppDevextremeAspCoreProject.Controllers
                 {
                     return BadRequest(ModelState.GetFullErrorMessage());
                 }
+                employee.EmployeeFilials = employee.GuidFilials.Select(x => new EmployeeFilial { FilialId = x }).ToList();
 
                 await _appContext.Employees.AddAsync(employee);
                 await _appContext.SaveChangesAsync();
