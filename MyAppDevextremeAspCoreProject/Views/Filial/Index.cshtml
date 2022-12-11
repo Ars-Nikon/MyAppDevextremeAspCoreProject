@@ -1,4 +1,6 @@
 ﻿@using MyAppDevextremeAspCoreProject.Models
+
+
 <h2>Filial</h2>
 @(
 Html.DevExtreme().DataGrid<Filial>()
@@ -28,7 +30,7 @@ Html.DevExtreme().DataGrid<Filial>()
         columns.AddFor(m => m.BeginningOfWork).AllowHeaderFiltering(false).DataField("BeginningOfWork").FilterOperations(new string[] { "=", "<>", "<=", ">=" }).Caption("Начало работы").CalculateFilterExpression("calculateFilterExpression").DataType(GridColumnDataType.DateTime).Format("HH:mm").FormItem(x => x.Editor(y => y.DateBox().Type(DateBoxType.Time)));
         columns.AddFor(m => m.EndOfWork).AllowHeaderFiltering(false).DataField("EndOfWork").FilterOperations(new string[] { "=", "<>", "<=", ">=" }).Caption("Конец работы").Format("HH:mm").CalculateFilterExpression("calculateFilterExpression").DataType(GridColumnDataType.DateTime).Format("HH:mm").FormItem(x => x.Editor(y => y.DateBox().Type(DateBoxType.Time)));
         columns.AddFor(m => m.CreatedDate).SortOrder(SortOrder.Desc).Caption("Дата создания").SortOrder(SortOrder.Desc).FormItem(x => x.Visible(false));
-    })
+    }).Export(x => x.Enabled(true)).OnExporting("exporting")
    .Paging(p => p.PageSize(10))
     .Pager(p => p
         .ShowPageSizeSelector(true)

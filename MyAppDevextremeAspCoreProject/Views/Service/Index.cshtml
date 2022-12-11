@@ -1,4 +1,5 @@
 ﻿@using MyAppDevextremeAspCoreProject.Models
+
 <h2>Service</h2>
 @(
 Html.DevExtreme().DataGrid<Service>()
@@ -18,7 +19,7 @@ Html.DevExtreme().DataGrid<Service>()
         columns.AddFor(m => m.Price).Caption("Цена").FormItem(x => x.Editor(y => y.NumberBox().Format("₽ #,##0.##")));
         columns.AddFor(m => m.AcceptsСhildren).Caption("Принимает детей");
         columns.AddFor(m => m.CreatedDate).SortOrder(SortOrder.Desc).Caption("Дата создания").FormItem(x => x.Visible(false));
-    })
+    }).Export(x => x.Enabled(true)).OnExporting("exporting")
    .Paging(p => p.PageSize(10))
     .Pager(p => p
         .ShowPageSizeSelector(true)

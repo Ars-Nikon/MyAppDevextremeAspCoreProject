@@ -19,7 +19,7 @@ Html.DevExtreme().DataGrid<Organization>()
         columns.AddFor(m => m.Phone).Caption("Номер телефона").FormItem(x => x.Editor(y => y.TextBox().Mask(@"0 (000) 000-0000").MaskRules(new { X = new JS("/[02-9]/") })));
         columns.AddFor(m => m.FullNameOwner).Caption("ФИО владельца");
         columns.AddFor(m => m.CreatedDate).SortOrder(SortOrder.Desc).Caption("Дата создания").SortOrder(SortOrder.Desc).FormItem(x => x.Visible(false));
-    })
+    }).Export(x => x.Enabled(true)).OnExporting("exporting")
    .Paging(p => p.PageSize(10))
     .Pager(p => p
         .ShowPageSizeSelector(true)

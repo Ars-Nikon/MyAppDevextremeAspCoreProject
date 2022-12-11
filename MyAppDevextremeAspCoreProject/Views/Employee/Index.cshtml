@@ -36,6 +36,8 @@ Html.DevExtreme().DataGrid<Employee>()
                                 .AllowSorting(false);
                                 columns.AddFor(m => m.CreatedDate).SortOrder(SortOrder.Desc).Caption("Дата создания").FormItem(x => x.Visible(false));
                             })
+                            .Export(x => x.Enabled(true))
+                            .OnExporting("exporting")
    .Paging(p => p.PageSize(10))
     .Pager(p => p
         .ShowPageSizeSelector(true)
