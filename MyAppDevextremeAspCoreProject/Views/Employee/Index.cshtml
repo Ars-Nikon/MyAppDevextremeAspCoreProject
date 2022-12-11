@@ -18,11 +18,16 @@ Html.DevExtreme().DataGrid<Employee>()
                                 columns.AddFor(m => m.Patronymic).Caption("Отчество");
                                 columns.AddFor(m => m.BirthDate).Caption("Дата рождения");
                                 columns.AddFor(m => m.Phone).Caption("Номер телефона").FormItem(x => x.Editor(y => y.TextBox().Mask(@"0 (000) 000-0000").MaskRules(new { X = new JS("/[02-9]/") })));
-                                columns.AddFor(m => m.GuidFilials).DataField("GuidFilials.$values").Caption("Филилал").Lookup(lookup => lookup
-                                .DataSource(d => d.Mvc().Controller("Filial").LoadAction("GetFilialLookup").Key("Id"))
+                                columns.AddFor(m => m.GuidFilials).DataField("GuidFilials").Caption("Филилал").Lookup(lookup => lookup
+                                .DataSource(d => d.Mvc().Controller("Filial").LoadAction("GetFilialLookup").Key("Id")).DataSourceOptions(x => x.Paginate(true))
                                 .ValueExpr("Id")
-                                .DisplayExpr("Name")).CellTemplate(new JS("cellTemplate"))
-                                .CalculateFilterExpression("calculateFilterExpression").EditCellTemplate(new TemplateName("TagBoxTemplate"));
+                                .DisplayExpr("Name"))
+                                .EditCellTemplate(new TemplateName("TagBoxTemplate"))
+                                .CalculateDisplayValue("FilialsName")
+                                .AllowFiltering(false)
+                                .AllowHeaderFiltering(true)
+                                .HeaderFilter(x => x.DataSource(d => d.Mvc().Controller("Filial").LoadAction("GetFilialHeaderFilter").Key("Id"))
+                                .DataSourceOptions(x => x.Paginate(true)));
                                 columns.AddFor(m => m.CreatedDate).SortOrder(SortOrder.Desc).Caption("Дата создания").FormItem(x => x.Visible(false));
                             })
    .Paging(p => p.PageSize(10))
@@ -45,36 +50,23 @@ Html.DevExtreme().DataGrid<Employee>()
 
 @using (Html.DevExtreme().NamedTemplate("TagBoxTemplate"))
 {
-    @(Html.DevExtreme().TagBox()
-                            .DataSource(d => d.Mvc().Controller("Filial").LoadAction("GetFilialLookup").Key("Id")).DataSourceOptions(x => x.Paginate(true))
-                .Value(new JS("value"))
-                    .ValueExpr("Id")
-                    .DisplayExpr("Name")
-                .ShowSelectionControls(true)
-                .MaxDisplayedTags(3)
-                .ShowMultiTagOnly(false)
-                .ApplyValueMode(EditorApplyValueMode.UseButtons)
-                .SearchEnabled(true)
-                .OnValueChanged("function(e) { setValue(e.value); }")
-                .OnSelectionChanged("function(e) { component.updateDimensions(); }")
-            )
+    @(Html.DevExtreme().TagBox().DataSource(d => d.Mvc().Controller("Filial").LoadAction("GetFilialLookup").Key("Id"))
+        .DataSourceOptions(x => x.Paginate(true).PageSize(30))
+        .Value(new JS("value"))
+        .ValueExpr("Id")
+        .DisplayExpr("Name")
+        .ShowSelectionControls(true)
+        .MaxDisplayedTags(3)
+        .ShowMultiTagOnly(false)
+        .ApplyValueMode(EditorApplyValueMode.UseButtons)
+        .SearchEnabled(true)
+        .OnValueChanged("function(e) { setValue(e.value); }")
+        .OnSelectionChanged("function(e) { component.updateDimensions(); }")
+        )
 }
 
-
 <script>
-    function cellTemplate(container, options) {
-        var noBreakSpace = "\u00A0",
-            text = (options.value || []).map(element => {
-                return options.column.lookup.calculateCellValue(element);
-            }).join(", ");
-        container.text(text || noBreakSpace).attr("title", text);
-    }
-    function calculateFilterExpression(filterValue, selectedFilterOperation, target) {
-        if (target === "search" && typeof (filterValue) === "string") {
-            return [this.dataField, "contains", filterValue]
-        }
-        return function (data) {
-            return (data.AssignedEmployee || []).indexOf(filterValue) !== -1
-        }
+    function test() {
+        alert("ad");
     }
 </script>

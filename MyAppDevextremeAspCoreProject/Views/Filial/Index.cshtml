@@ -22,7 +22,9 @@ Html.DevExtreme().DataGrid<Filial>()
             .DataSource(d => d.Mvc().Controller("Organization").LoadAction("GetOrganizationsLookup").Key("Id"))
             .DisplayExpr("Name")
             .ValueExpr("Id").DataSourceOptions(x => x.Paginate(true).PageSize(20))
-            ).AllowFiltering(false).AllowHeaderFiltering(true);
+            ).AllowFiltering(false)
+            .AllowHeaderFiltering(true)
+            .CalculateDisplayValue("Organization.Name");
         columns.AddFor(m => m.BeginningOfWork).AllowHeaderFiltering(false).DataField("BeginningOfWork").FilterOperations(new string[] { "=", "<>", "<=", ">=" }).Caption("Начало работы").CalculateFilterExpression("calculateFilterExpression").DataType(GridColumnDataType.DateTime).Format("HH:mm").FormItem(x => x.Editor(y => y.DateBox().Type(DateBoxType.Time)));
         columns.AddFor(m => m.EndOfWork).AllowHeaderFiltering(false).DataField("EndOfWork").FilterOperations(new string[] { "=", "<>", "<=", ">=" }).Caption("Конец работы").Format("HH:mm").CalculateFilterExpression("calculateFilterExpression").DataType(GridColumnDataType.DateTime).Format("HH:mm").FormItem(x => x.Editor(y => y.DateBox().Type(DateBoxType.Time)));
         columns.AddFor(m => m.CreatedDate).SortOrder(SortOrder.Desc).Caption("Дата создания").SortOrder(SortOrder.Desc).FormItem(x => x.Visible(false));

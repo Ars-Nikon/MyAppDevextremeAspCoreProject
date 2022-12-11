@@ -32,7 +32,7 @@ namespace MyAppDevextremeAspCoreProject.Controllers
         {
             try
             {
-                return DataSourceLoader.Load(_appContext.Filials, loadOptions);
+                return DataSourceLoader.Load(_appContext.Filials.Include(x => x.Organization), loadOptions);
             }
             catch (Exception ex)
             {
@@ -140,5 +140,20 @@ namespace MyAppDevextremeAspCoreProject.Controllers
                 return ex.Message;
             }
         }
+
+        [HttpGet]
+        public object GetFilialHeaderFilter(DataSourceLoadOptions loadOptions)
+        {
+            try
+            {
+                return DataSourceLoader.Load(_appContext.Filials.Select(x => new { x.Id, text = x.Name, value = "wea" }), loadOptions);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return ex.Message;
+            }
+        }
+
     }
 }
