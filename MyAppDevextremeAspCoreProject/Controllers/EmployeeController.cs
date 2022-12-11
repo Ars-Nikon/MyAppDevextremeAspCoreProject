@@ -29,7 +29,7 @@ namespace MyAppDevextremeAspCoreProject.Controllers
         {
             try
             {
-                var dataSourceLoader = DataSourceLoader.Load(_appContext.Employees.Include(x => x.EmployeeFilials).ThenInclude(x => x.Filial), loadOptions);
+                var dataSourceLoader = DataSourceLoader.Load(_appContext.Employees.Include(x => x.EmployeeFilials).ThenInclude(x => x.Filial).Include(x => x.EmployeeServices).ThenInclude(x => x.Service), loadOptions);
                 if (loadOptions.Group != null)
                 {
                     return dataSourceLoader;
@@ -40,6 +40,10 @@ namespace MyAppDevextremeAspCoreProject.Controllers
                     x.GuidFilials = x.EmployeeFilials.Select(x => x.FilialId).ToList();
                     x.FilialsName = string.Join(',', x.EmployeeFilials.Select(x => x?.Filial?.Name));
                     x.EmployeeFilials = null!;
+
+                    x.GuidServices = x.EmployeeServices.Select(x => x.ServiceId).ToList();
+                    x.ServicesName = string.Join(',', x.EmployeeServices.Select(x => x?.Service?.Name));
+                    x.EmployeeServices = null!;
                 });
                 dataSourceLoader.data = data;
                 return dataSourceLoader;
@@ -59,6 +63,7 @@ namespace MyAppDevextremeAspCoreProject.Controllers
                 var employee = await _appContext.
                     Employees.
                     Include(x => x.EmployeeFilials).
+                    Include(x => x.EmployeeServices).
                     FirstOrDefaultAsync(o => o.Id == key);
 
                 if (employee == null)
@@ -72,7 +77,14 @@ namespace MyAppDevextremeAspCoreProject.Controllers
                 }
 
                 JsonConvert.PopulateObject(values, employee);
-                employee.EmployeeFilials = employee.GuidFilials.Select(x => new EmployeeFilial { FilialId = x }).ToList();
+                if (employee.GuidFilials.Count != 0)
+                {
+                    employee.EmployeeFilials = employee.GuidFilials.Select(x => new EmployeeFilial { FilialId = x }).ToList();
+                }
+                if (employee.GuidServices.Count != 0)
+                {
+                    employee.EmployeeServices = employee.GuidServices.Select(x => new EmployeeService { ServiceId = x }).ToList();
+                }
 
                 await _appContext.SaveChangesAsync();
 
@@ -99,6 +111,7 @@ namespace MyAppDevextremeAspCoreProject.Controllers
                     return BadRequest(ModelState.GetFullErrorMessage());
                 }
                 employee.EmployeeFilials = employee.GuidFilials.Select(x => new EmployeeFilial { FilialId = x }).ToList();
+                employee.EmployeeServices = employee.GuidServices.Select(x => new EmployeeService { ServiceId = x }).ToList();
 
                 await _appContext.Employees.AddAsync(employee);
                 await _appContext.SaveChangesAsync();

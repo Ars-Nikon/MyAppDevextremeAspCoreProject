@@ -268,8 +268,8 @@ namespace MyAppDevextremeAspCoreProject.Utilities
 "Доп.средство пилинг Джесснера после чистки лица",
 "Доп.услуга Дарсонваль"
 };
-            var timeWorks = new TimeSpan[] { new TimeSpan(0, 30, 0), new TimeSpan(0, 45, 0), new TimeSpan(0, 50, 0), new TimeSpan(1, 0, 0) };
             var prices = new double[] { 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 6000 };
+            var acceptsСhildren = new bool[] { true, false };
             var random = new Random();
 
             var results = new List<Service>(services.Length);
@@ -282,8 +282,8 @@ namespace MyAppDevextremeAspCoreProject.Utilities
                     Id = Guid.NewGuid(),
                     Name = servise,
                     Description = $"Одна из самых популярных услуг это {servise}",
-                    Price = prices[random.Next(0, prices.Length - 1)],
-                    TimeWork = timeWorks[random.Next(0, timeWorks.Length - 1)]
+                    Price = prices[random.Next(0, prices.Length)],
+                    AcceptsСhildren = acceptsСhildren[random.Next(0, acceptsСhildren.Length)]
                 });
             }
             return results;

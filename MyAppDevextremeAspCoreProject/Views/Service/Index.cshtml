@@ -1,0 +1,36 @@
+﻿@using MyAppDevextremeAspCoreProject.Models
+<h2>Service</h2>
+@(
+Html.DevExtreme().DataGrid<Service>()
+    .ShowBorders(true)
+    .DataSource(d => d.Mvc()
+    .Controller("Service")
+    .LoadAction("GetServices")
+    .InsertAction("InsertService")
+    .UpdateAction("UpdateService")
+    .DeleteAction("DeleteService")
+    .Key("Id"))
+    .Columns(columns =>
+    {
+        columns.AddFor(m => m.Id).Caption("Id").FormItem(x => x.Visible(false));
+        columns.AddFor(m => m.Name).Caption("Имя");
+        columns.AddFor(m => m.Description).Caption("Описание").FormItem(x => x.Editor(y => y.TextArea()));
+        columns.AddFor(m => m.Price).Caption("Цена").FormItem(x => x.Editor(y => y.NumberBox().Format("₽ #,##0.##")));
+        columns.AddFor(m => m.AcceptsСhildren).Caption("Принимает детей");
+        columns.AddFor(m => m.CreatedDate).SortOrder(SortOrder.Desc).Caption("Дата создания").FormItem(x => x.Visible(false));
+    })
+   .Paging(p => p.PageSize(10))
+    .Pager(p => p
+        .ShowPageSizeSelector(true)
+        .AllowedPageSizes(new[] { 10, 25, 50, 100 })
+    )
+    .FilterRow(f => f.Visible(true))
+    .HeaderFilter(f => { f.Visible(true); f.AllowSearch(true); })
+    .Editing(e => e.AllowAdding(true).AllowDeleting(true).AllowUpdating(true).Mode(GridEditMode.Form))
+    .Grouping(g => g.AutoExpandAll(false))
+    .RemoteOperations(true)
+    .Summary(s => s
+    .TotalItems(totalItems =>
+    {
+        totalItems.AddFor(m => m.Id).SummaryType(SummaryType.Count);
+    })))

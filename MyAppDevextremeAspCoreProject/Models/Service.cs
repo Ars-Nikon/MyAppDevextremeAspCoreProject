@@ -24,7 +24,10 @@ namespace MyAppDevextremeAspCoreProject.Models
         public double Price { get; set; }
 
         [Required]
-        public TimeSpan TimeWork { get; set; }
+        public bool AcceptsСhildren { get; set; }
+
+        [Required]
+        public DateTime CreatedDate { get; set; }
 
         public List<EmployeeService> EmployeeServices { get; set; } = new();
     }

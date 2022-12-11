@@ -21,7 +21,7 @@ namespace MyAppDevextremeAspCoreProject.Contexts
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
         {
-            Database.EnsureCreated();
+                   Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -38,6 +38,10 @@ namespace MyAppDevextremeAspCoreProject.Contexts
            .HasDefaultValueSql("getdate()");
 
             modelBuilder.Entity<Employee>()
+           .Property(b => b.CreatedDate)
+           .HasDefaultValueSql("getdate()");
+
+            modelBuilder.Entity<Service>()
            .Property(b => b.CreatedDate)
            .HasDefaultValueSql("getdate()");
 

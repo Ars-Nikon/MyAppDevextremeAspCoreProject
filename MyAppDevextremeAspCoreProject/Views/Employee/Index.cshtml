@@ -18,16 +18,22 @@ Html.DevExtreme().DataGrid<Employee>()
                                 columns.AddFor(m => m.Patronymic).Caption("Отчество");
                                 columns.AddFor(m => m.BirthDate).Caption("Дата рождения");
                                 columns.AddFor(m => m.Phone).Caption("Номер телефона").FormItem(x => x.Editor(y => y.TextBox().Mask(@"0 (000) 000-0000").MaskRules(new { X = new JS("/[02-9]/") })));
-                                columns.AddFor(m => m.GuidFilials).DataField("GuidFilials").Caption("Филилал").Lookup(lookup => lookup
+                                columns.AddFor(m => m.GuidFilials).DataField("GuidFilials").Caption("Филилалы").Lookup(lookup => lookup
                                 .DataSource(d => d.Mvc().Controller("Filial").LoadAction("GetFilialLookup").Key("Id")).DataSourceOptions(x => x.Paginate(true))
                                 .ValueExpr("Id")
                                 .DisplayExpr("Name"))
                                 .EditCellTemplate(new TemplateName("TagBoxTemplate"))
                                 .CalculateDisplayValue("FilialsName")
                                 .AllowFiltering(false)
-                                .AllowSorting(false)
-                                .HeaderFilter(x => x.DataSource(d => d.Mvc().Controller("Filial").LoadAction("GetFilialHeaderFilter").Key("Id"))
-                                .DataSourceOptions(x => x.Paginate(true)));
+                                .AllowSorting(false);
+                                columns.AddFor(m => m.GuidServices).DataField("GuidServices").Caption("Сервисы").Lookup(lookup => lookup
+                                .DataSource(d => d.Mvc().Controller("Service").LoadAction("GetServicesLookup").Key("Id")).DataSourceOptions(x => x.Paginate(true))
+                                .ValueExpr("Id")
+                                .DisplayExpr("Name"))
+                                .EditCellTemplate(new TemplateName("TagBoxTemplate2"))
+                                .CalculateDisplayValue("ServicesName")
+                                .AllowFiltering(false)
+                                .AllowSorting(false);
                                 columns.AddFor(m => m.CreatedDate).SortOrder(SortOrder.Desc).Caption("Дата создания").FormItem(x => x.Visible(false));
                             })
    .Paging(p => p.PageSize(10))
@@ -51,16 +57,33 @@ Html.DevExtreme().DataGrid<Employee>()
 @using (Html.DevExtreme().NamedTemplate("TagBoxTemplate"))
 {
     @(Html.DevExtreme().TagBox().DataSource(d => d.Mvc().Controller("Filial").LoadAction("GetFilialLookup").Key("Id"))
-        .DataSourceOptions(x => x.Paginate(true).PageSize(30))
-        .Value(new JS("value"))
-        .ValueExpr("Id")
-        .DisplayExpr("Name")
-        .ShowSelectionControls(true)
-        .MaxDisplayedTags(5)
-        .ShowMultiTagOnly(false)
-        .ApplyValueMode(EditorApplyValueMode.UseButtons)
-        .SearchEnabled(true)
-        .OnValueChanged("function(e) { setValue(e.value); }")
-        .OnSelectionChanged("function(e) { component.updateDimensions(); }")
-        )
+            .DataSourceOptions(x => x.Paginate(true).PageSize(30))
+            .Value(new JS("value"))
+            .ValueExpr("Id")
+            .DisplayExpr("Name")
+            .ShowSelectionControls(true)
+            .MaxDisplayedTags(5)
+            .ShowMultiTagOnly(false)
+            .ApplyValueMode(EditorApplyValueMode.UseButtons)
+            .SearchEnabled(true)
+            .OnValueChanged("function(e) { setValue(e.value); }")
+            .OnSelectionChanged("function(e) { component.updateDimensions(); }")
+            )
+}
+
+@using (Html.DevExtreme().NamedTemplate("TagBoxTemplate2"))
+{
+    @(Html.DevExtreme().TagBox().DataSource(d => d.Mvc().Controller("Service").LoadAction("GetServicesLookup").Key("Id"))
+                .DataSourceOptions(x => x.Paginate(true).PageSize(30))
+                .Value(new JS("value"))
+                .ValueExpr("Id")
+                .DisplayExpr("Name")
+                .ShowSelectionControls(true)
+                .MaxDisplayedTags(5)
+                .ShowMultiTagOnly(false)
+                .ApplyValueMode(EditorApplyValueMode.UseButtons)
+                .SearchEnabled(true)
+                .OnValueChanged("function(e) { setValue(e.value); }")
+                .OnSelectionChanged("function(e) { component.updateDimensions(); }")
+                )
 }
