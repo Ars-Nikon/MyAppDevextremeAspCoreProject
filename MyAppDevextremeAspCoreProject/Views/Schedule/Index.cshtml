@@ -1,0 +1,52 @@
+﻿@using MyAppDevextremeAspCoreProject.Models
+<h2>Schedule</h2>
+
+<div class="row">
+    <div class="col-6">
+        <label>Специалист</label>
+        <div>
+            @(
+                Html
+                .DevExtreme()
+                .SelectBox()
+                .ID("EmployeeSelectBox")
+                .DataSource(x => x.Mvc().Controller("Employee").Key("Id").LoadAction("EmployeeSelectBox").LoadMode(DataSourceLoadMode.Raw)).DataSourceOptions(x => x.Paginate(true))
+                .ValueExpr("Id")
+                .DisplayExpr("FIO")
+                .SearchEnabled(true)
+                )
+        </div>
+    </div>
+</div>
+
+<div class="mt-5">
+    @(Html.DevExtreme().Scheduler()
+        .ID("IdTimeTable")
+        .DataSource(d => d.Mvc()
+        .Controller("Schedule")
+        .Key("IdTimeTable")
+        .LoadAction("Get")
+        .UpdateAction("Put")
+        .InsertAction("Post")
+        .DeleteAction("Delete")
+        )
+        .TimeZone("Europe/Moscow")
+        .DateSerializationFormat("yyyy-MM-ddTHH:mm:ssZ")
+        .RemoteFiltering(true)
+        .Views(new[] {
+    SchedulerViewType.Day,
+    SchedulerViewType.Week,
+    SchedulerViewType.Month
+        })
+        .CurrentView(SchedulerViewType.Day)
+        .CurrentDate(DateTime.UtcNow.AddHours(3))
+        .StartDayHour(0)
+        .EndDayHour(23)
+        .Height(900)
+        .AllDayPanelMode(AllDayPanelMode.Hidden)
+        .TextExpr("Text")
+        .StartDateExpr("StartTime")
+        .EndDateExpr("EndTime")
+        )
+</div>
+

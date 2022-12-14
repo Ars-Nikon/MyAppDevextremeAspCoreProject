@@ -20,15 +20,15 @@ namespace MyAppDevextremeAspCoreProject.Models
         public TimeTable? TimeTable { get; set; }
 
         [ForeignKey("Client")]
-        public Guid? IdUser { get; set; }
+        public Guid? IdClient { get; set; }
 
         public Client? Client { get; set; }
 
         [Required]
-        public TimeSpan StartTime { get; set; }
+        public DateTime StartTime { get; set; }
 
         [Required]
-        public TimeSpan EndTime { get; set; }
+        public DateTime EndTime { get; set; }
 
         [Required]
         public DateTime CreatedDate { get; set; }

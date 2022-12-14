@@ -27,11 +27,11 @@ namespace MyAppDevextremeAspCoreProject.Controllers
 
 
         [HttpGet]
-        public object GetClients(DataSourceLoadOptions loadOptions)
+        public async Task<object> GetClients(DataSourceLoadOptions loadOptions)
         {
             try
             {
-                return DataSourceLoader.Load(_appContext.Clients, loadOptions);
+                return await DataSourceLoader.LoadAsync(_appContext.Clients, loadOptions);
             }
             catch (Exception ex)
             {
@@ -127,11 +127,11 @@ namespace MyAppDevextremeAspCoreProject.Controllers
 
 
         [HttpGet]
-        public object GetClientsLookup(DataSourceLoadOptions loadOptions)
+        public async Task<object> GetClientsLookup(DataSourceLoadOptions loadOptions)
         {
             try
             {
-                return DataSourceLoader.Load(_appContext.Clients.Select(x => new { x.Id, x.Name }), loadOptions);
+                return await DataSourceLoader.LoadAsync(_appContext.Clients.Select(x => new { x.Id, x.Name }), loadOptions);
             }
             catch (Exception ex)
             {

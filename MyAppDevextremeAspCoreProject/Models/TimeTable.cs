@@ -14,10 +14,16 @@ namespace MyAppDevextremeAspCoreProject.Models
         public Guid Id { get; set; }
         [Required]
         public DateTime Date { get; set; }
+
         [Required]
         [ForeignKey("Employee")]
         public Guid IdEmployee { get; set; }
         public Employee? Employee { get; set; }
+
+        [Required]
+        [ForeignKey("Filial")]
+        public Guid IdFilial { get; set; }
+        public Filial? Filial { get; set; }
 
         [Required]
         public DateTime CreatedDate { get; set; }

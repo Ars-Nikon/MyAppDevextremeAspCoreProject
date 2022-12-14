@@ -28,11 +28,11 @@ namespace MyAppDevextremeAspCoreProject.Controllers
         }
 
         [HttpGet]
-        public object GetFilials(DataSourceLoadOptions loadOptions)
+        public async Task<object> GetFilials(DataSourceLoadOptions loadOptions)
         {
             try
             {
-                return DataSourceLoader.Load(_appContext.Filials.Include(x => x.Organization), loadOptions);
+                return await DataSourceLoader.LoadAsync(_appContext.Filials.Include(x => x.Organization), loadOptions);
             }
             catch (Exception ex)
             {
@@ -128,11 +128,11 @@ namespace MyAppDevextremeAspCoreProject.Controllers
 
 
         [HttpGet]
-        public object GetFilialLookup(DataSourceLoadOptions loadOptions)
+        public async Task<object> GetFilialLookup(DataSourceLoadOptions loadOptions)
         {
             try
             {
-                return DataSourceLoader.Load(_appContext.Filials, loadOptions);
+                return await DataSourceLoader.LoadAsync(_appContext.Filials, loadOptions);
             }
             catch (Exception ex)
             {
@@ -142,11 +142,11 @@ namespace MyAppDevextremeAspCoreProject.Controllers
         }
 
         [HttpGet]
-        public object GetFilialHeaderFilter(DataSourceLoadOptions loadOptions)
+        public async Task<object> GetFilialHeaderFilter(DataSourceLoadOptions loadOptions)
         {
             try
             {
-                return DataSourceLoader.Load(_appContext.Filials.Select(x => new { x.Id, text = x.Name, value = "wea" }), loadOptions);
+                return await DataSourceLoader.LoadAsync(_appContext.Filials.Select(x => new { x.Id, text = x.Name, value = "wea" }), loadOptions);
             }
             catch (Exception ex)
             {

@@ -25,11 +25,11 @@ namespace MyAppDevextremeAspCoreProject.Controllers
         }
 
         [HttpGet]
-        public object GetEmployees(DataSourceLoadOptions loadOptions)
+        public async Task<object> GetEmployees(DataSourceLoadOptions loadOptions)
         {
             try
             {
-                var dataSourceLoader = DataSourceLoader.Load(_appContext.Employees.Include(x => x.EmployeeFilials).ThenInclude(x => x.Filial).Include(x => x.EmployeeServices).ThenInclude(x => x.Service), loadOptions);
+                var dataSourceLoader = await DataSourceLoader.LoadAsync(_appContext.Employees.Include(x => x.EmployeeFilials).ThenInclude(x => x.Filial).Include(x => x.EmployeeServices).ThenInclude(x => x.Service), loadOptions);
                 if (loadOptions.Group != null)
                 {
                     return dataSourceLoader;
@@ -144,6 +144,19 @@ namespace MyAppDevextremeAspCoreProject.Controllers
                 await _appContext.SaveChangesAsync();
 
                 return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        public async Task<object> EmployeeSelectBox(DataSourceLoadOptions loadOptions)
+        {
+            try
+            {
+                return await DataSourceLoader.LoadAsync(_appContext.EmployeeFioViews, loadOptions);
             }
             catch (Exception ex)
             {

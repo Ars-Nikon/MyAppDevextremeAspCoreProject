@@ -14,6 +14,8 @@ namespace MyAppDevextremeAspCoreProject.Contexts
         public DbSet<Service> Services { get; set; } = null!;
         public DbSet<TimeTable> TimeTables { get; set; } = null!;
         public DbSet<EmployeeService> EmployeeServices { get; set; } = null!;
+        public DbSet<FullScheduleView> FullScheduleViews { get; set; } = null!;
+        public DbSet<EmployeeFioView> EmployeeFioViews { get; set; } = null!;
 
 
 
@@ -21,7 +23,12 @@ namespace MyAppDevextremeAspCoreProject.Contexts
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
         {
-                   Database.EnsureCreated();
+            //Database.EnsureDeleted();
+            if (Database.EnsureCreated())
+            {
+                Database.ExecuteSqlRaw("Create view EmployeeFioView as SELECT Id, (Surname+' '+Name+' '+Patronymic) as FIO from Employees");
+                Database.ExecuteSqlRaw("create view FullScheduleView as SELECT tt.Id as IdTimeTable, tt.Date as DateVisit, tt.IdEmployee as IdEmployee, \r\ntt.IdFilial as IdFilial, sch.Id as IdSchedule, sch.IdClient as IdClient, sch.StartTime as StartTime, sch.EndTime as EndTime\r\nFROM TimeTables tt\r\nLEFT JOIN ScheduleTimes sch on tt.Id = sch.IdTimeTable");
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -56,6 +63,14 @@ namespace MyAppDevextremeAspCoreProject.Contexts
             modelBuilder.Entity<ScheduleTime>()
            .Property(b => b.CreatedDate)
            .HasDefaultValueSql("getdate()");
+
+            modelBuilder.Entity<FullScheduleView>()
+                .ToView("FullScheduleView")
+                .HasNoKey();
+
+            modelBuilder.Entity<EmployeeFioView>()
+                 .ToView("EmployeeFioView")
+                 .HasNoKey();
 
             modelBuilder.GenerateData();
         }

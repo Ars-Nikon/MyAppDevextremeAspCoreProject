@@ -46,6 +46,7 @@ namespace MyAppDevextremeAspCoreProject.Models
 
         [NotMapped]
         public string? ServicesName { get; set; }
+
         public List<EmployeeFilial> EmployeeFilials { get; set; } = new();
         public List<EmployeeService> EmployeeServices { get; set; } = new();
     }
