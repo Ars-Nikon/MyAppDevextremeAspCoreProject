@@ -140,20 +140,5 @@ namespace MyAppDevextremeAspCoreProject.Controllers
                 return ex.Message;
             }
         }
-
-        [HttpGet]
-        public async Task<object> GetFilialHeaderFilter(DataSourceLoadOptions loadOptions)
-        {
-            try
-            {
-                return await DataSourceLoader.LoadAsync(_appContext.Filials.Select(x => new { x.Id, text = x.Name, value = "wea" }), loadOptions);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                return ex.Message;
-            }
-        }
-
     }
 }

@@ -1,6 +1,7 @@
 ﻿using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MyAppDevextremeAspCoreProject.Contexts;
 using MyAppDevextremeAspCoreProject.Utilities;
 using Newtonsoft.Json;
@@ -28,7 +29,6 @@ namespace MyAppDevextremeAspCoreProject.Controllers
             try
             {
                 loadOptions.Filter = null;
-                var sad = _appContext.FullScheduleViews.ToList();
                 return await DataSourceLoader.LoadAsync(_appContext.FullScheduleViews, loadOptions);
             }
             catch (Exception ex)
@@ -36,6 +36,30 @@ namespace MyAppDevextremeAspCoreProject.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpGet]
+        public async Task<object> FilialsSelectBoxByEmployee(DataSourceLoadOptions loadOptions, [FromQuery] string? guid)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(guid))
+                {
+                    return BadRequest("Guid is null");
+                }
+                var data = _appContext.
+                    EmployeeFilials.
+                    Include(x => x.Filial).
+                    Where(x => x.EmployeeId == Guid.Parse(guid));
+
+                return await DataSourceLoader.LoadAsync(data.Select(x => new { Id = x.FilialId, Name = x.Filial!.Name }), loadOptions);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return ex.Message;
+            }
+        }
+
+
 
         [HttpPost]
         public IActionResult Post(string values)

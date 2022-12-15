@@ -9,18 +9,38 @@
                 Html
                 .DevExtreme()
                 .SelectBox()
-                .ID("EmployeeSelectBox")
-                .DataSource(x => x.Mvc().Controller("Employee").Key("Id").LoadAction("EmployeeSelectBox").LoadMode(DataSourceLoadMode.Raw)).DataSourceOptions(x => x.Paginate(true))
+                .ID("EmployeesSelectBox")
+                .DataSource(x => x.Mvc().Controller("Employee").Key("Id").LoadAction("EmployeesSelectBox")).DataSourceOptions(x => x.Paginate(true).PageSize(20))
                 .ValueExpr("Id")
                 .DisplayExpr("FIO")
+                .OnValueChanged("SelectionChanged")
                 .SearchEnabled(true)
+                )
+        </div>
+    </div>
+    <div class="col-6">
+        <label>Филиал</label>
+        <div>
+            @(
+                Html
+                .DevExtreme()
+                .SelectBox()
+                .ID("FilialsSelectBox")
+                .DataSource(x => x.Mvc().Controller("Schedule").Key("Id").LoadAction("FilialsSelectBoxByEmployee").OnBeforeSend("OnBeforeSend")).DataSourceOptions(x => x.Paginate(true))
+                .ValueExpr("Id")
+                .DisplayExpr("Name")
+                .OnValueChanged("SelectionChanged")
+                .SearchEnabled(true)
+                .Disabled(true)
                 )
         </div>
     </div>
 </div>
 
 <div class="mt-5">
-    @(Html.DevExtreme().Scheduler()
+    @(Html.DevExtreme()
+        .Scheduler()
+        .Disabled(true)
         .ID("IdTimeTable")
         .DataSource(d => d.Mvc()
         .Controller("Schedule")
@@ -50,3 +70,4 @@
         )
 </div>
 
+<script src="~/js/Schedule.js"></script>

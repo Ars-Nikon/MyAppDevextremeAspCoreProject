@@ -14,6 +14,7 @@ namespace MyAppDevextremeAspCoreProject.Contexts
         public DbSet<Service> Services { get; set; } = null!;
         public DbSet<TimeTable> TimeTables { get; set; } = null!;
         public DbSet<EmployeeService> EmployeeServices { get; set; } = null!;
+        public DbSet<EmployeeFilial> EmployeeFilials { get; set; } = null!;
         public DbSet<FullScheduleView> FullScheduleViews { get; set; } = null!;
         public DbSet<EmployeeFioView> EmployeeFioViews { get; set; } = null!;
 

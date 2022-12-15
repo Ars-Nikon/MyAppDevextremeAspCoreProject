@@ -152,7 +152,7 @@ namespace MyAppDevextremeAspCoreProject.Controllers
             }
         }
 
-        public async Task<object> EmployeeSelectBox(DataSourceLoadOptions loadOptions)
+        public async Task<object> EmployeesSelectBox(DataSourceLoadOptions loadOptions)
         {
             try
             {
