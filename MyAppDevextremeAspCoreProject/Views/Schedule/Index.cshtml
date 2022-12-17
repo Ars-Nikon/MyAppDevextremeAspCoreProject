@@ -13,7 +13,7 @@
                 .DataSource(x => x.Mvc().Controller("Employee").Key("Id").LoadAction("EmployeesSelectBox")).DataSourceOptions(x => x.Paginate(true).PageSize(20))
                 .ValueExpr("Id")
                 .DisplayExpr("FIO")
-                .OnValueChanged("SelectionChanged")
+                .OnValueChanged("EmployeesSelectionChanged")
                 .SearchEnabled(true)
                 )
         </div>
@@ -26,10 +26,10 @@
                 .DevExtreme()
                 .SelectBox()
                 .ID("FilialsSelectBox")
-                .DataSource(x => x.Mvc().Controller("Schedule").Key("Id").LoadAction("FilialsSelectBoxByEmployee").OnBeforeSend("OnBeforeSend")).DataSourceOptions(x => x.Paginate(true))
+                .DataSource(x => x.Mvc().Controller("Schedule").Key("Id").LoadAction("FilialsSelectBoxByEmployee").OnBeforeSend("FilialsOnBeforeSend")).DataSourceOptions(x => x.Paginate(true))
                 .ValueExpr("Id")
                 .DisplayExpr("Name")
-                .OnValueChanged("SelectionChanged")
+                .OnValueChanged("FilialsSelectionChanged")
                 .SearchEnabled(true)
                 .Disabled(true)
                 )
@@ -38,36 +38,39 @@
 </div>
 
 <div class="mt-5">
-    @(Html.DevExtreme()
-        .Scheduler()
-        .Disabled(true)
-        .ID("IdTimeTable")
-        .DataSource(d => d.Mvc()
-        .Controller("Schedule")
-        .Key("IdTimeTable")
-        .LoadAction("Get")
-        .UpdateAction("Put")
-        .InsertAction("Post")
-        .DeleteAction("Delete")
-        )
-        .TimeZone("Europe/Moscow")
-        .DateSerializationFormat("yyyy-MM-ddTHH:mm:ssZ")
-        .RemoteFiltering(true)
-        .Views(new[] {
-    SchedulerViewType.Day,
-    SchedulerViewType.Week,
-    SchedulerViewType.Month
-        })
-        .CurrentView(SchedulerViewType.Day)
-        .CurrentDate(DateTime.UtcNow.AddHours(3))
-        .StartDayHour(0)
-        .EndDayHour(23)
-        .Height(900)
-        .AllDayPanelMode(AllDayPanelMode.Hidden)
-        .TextExpr("Text")
-        .StartDateExpr("StartTime")
-        .EndDateExpr("EndTime")
-        )
+
+    <div class="row">
+        <div class="col-6">
+            @(
+                Html.DevExtreme()
+                .Scheduler()
+                .Visible(false)
+                .ID("IdTimeTable")
+                .DataSource(d => d.Mvc()
+                .OnBeforeSend("ScheduleOnBeforeSend")
+                .Controller("Schedule")
+                .Key("IdTimeTable")
+                .LoadAction("Get"))
+                .RemoteFiltering(true)
+                .StartDateExpr("StartTime")
+                .ShowCurrentTimeIndicator(false)
+                .EndDateExpr("EndTime")
+                .Views(new[] { SchedulerViewType.Month })
+                .CurrentView(SchedulerViewType.Month)
+                .CurrentDate(DateTime.UtcNow.AddHours(3))
+                .TextExpr("Text")
+                .Height(900)
+                .Editing(x => x.AllowAdding(false).AllowDragging(false).AllowDeleting(false).AllowResizing(false).AllowUpdating(false)).OnAppointmentFormOpening("CancelForm")
+                )
+        </div>
+        <div class="col-6">
+        </div>
+    </div>
 </div>
+<script>
+    function CancelForm(e) {
+        e.cancel = true;
+    }
+</script>
 
 <script src="~/js/Schedule.js"></script>

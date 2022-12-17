@@ -3,8 +3,11 @@ using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyAppDevextremeAspCoreProject.Contexts;
+using MyAppDevextremeAspCoreProject.Models;
 using MyAppDevextremeAspCoreProject.Utilities;
 using Newtonsoft.Json;
+using System;
+using System.Collections;
 
 namespace MyAppDevextremeAspCoreProject.Controllers
 {
@@ -24,12 +27,27 @@ namespace MyAppDevextremeAspCoreProject.Controllers
         }
 
         [HttpGet]
-        public async Task<object> Get(DataSourceLoadOptions loadOptions)
+        public async Task<object?> Get(DataSourceLoadOptions loadOptions, [FromQuery] string? guidEmployee, [FromQuery] string? guidFilial)
         {
             try
             {
+                if (string.IsNullOrEmpty(guidEmployee) || string.IsNullOrEmpty(guidFilial))
+                {
+                    return null;
+                }
+
+#pragma warning disable CS8602,CS8600
+                var dates = (loadOptions.Filter[0] as IList)[0];
+                var start = DateTime.ParseExact(((IList)((IList)dates)[0])[2]?.ToString() ?? "06/25/2001", "M/d/yyyy", null);
+                var end = DateTime.ParseExact(((IList)((IList)dates)[1])[2]?.ToString() ?? "06/06/2001", "M/d/yyyy", null);
+#pragma warning restore CS8602, CS8600
+
                 loadOptions.Filter = null;
-                return await DataSourceLoader.LoadAsync(_appContext.FullScheduleViews, loadOptions);
+                var data = _appContext.
+                    FullScheduleViews.
+                    Where(x => x.IdFilial == Guid.Parse(guidFilial) && x.IdEmployee == Guid.Parse(guidEmployee) && x.DateVisit >= start && x.DateVisit <= end);
+
+                return await DataSourceLoader.LoadAsync(data, loadOptions); ;
             }
             catch (Exception ex)
             {
@@ -55,25 +73,25 @@ namespace MyAppDevextremeAspCoreProject.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                return ex.Message;
+                return BadRequest(ex.Message);
             }
         }
 
 
 
         [HttpPost]
-        public IActionResult Post(string values)
+        public async Task<IActionResult> Post(string values, [FromQuery] string? guidEmployee, [FromQuery] string? guidFilial)
         {
-            //var newAppointment = new Appointment();
-            //JsonConvert.PopulateObject(values, newAppointment);
-
-            //if (!TryValidateModel(newAppointment))
-            //    return BadRequest(ModelState.GetFullErrorMessage());
-
-            //_data.Appointments.Add(newAppointment);
-            //_data.SaveChanges();
-
-            return Ok();
+            try
+            {
+             
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut]

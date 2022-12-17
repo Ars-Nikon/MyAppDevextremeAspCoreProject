@@ -1,16 +1,40 @@
 ﻿let guidEmployee: string | null = null;
+let guidFilial: string | null = null;
 
-function SelectionChanged(e: DevExpress.ui.dxSelectBox.ValueChangedEvent) {
+function EmployeesSelectionChanged(e: DevExpress.ui.dxSelectBox.ValueChangedEvent) {
+    let filialsSelectBox = $("#FilialsSelectBox").dxSelectBox('instance');
+    let filialsdataSource = <DevExpress.data.DataSource>$("#FilialsSelectBox").dxSelectBox('getDataSource');
+    let scheduler = $("#IdTimeTable").dxScheduler('instance');
+
     if (e.value) {
         guidEmployee = e.value;
-        let filialsSelectBox = $("#FilialsSelectBox").dxSelectBox('instance');
         filialsSelectBox.option('disabled', false);
-        let filialdataSource = <DevExpress.data.DataSource>$("#FilialsSelectBox").dxSelectBox('getDataSource');
+        filialsSelectBox.reset();
+    }
+    else {
+        filialsSelectBox.option('disabled', true);
+        scheduler.option('visible', false);
     }
 }
 
-function OnBeforeSend(e, s) {
+function FilialsSelectionChanged(e: DevExpress.ui.dxSelectBox.ValueChangedEvent) {
+    if (e.value) {
+        guidFilial = e.value;
+        let scheduler = $("#IdTimeTable").dxScheduler('instance');
+        scheduler.option('visible', true);
+        let TimeTabledataSource = <DevExpress.data.DataSource>$("#IdTimeTable").dxScheduler('getDataSource');
+        TimeTabledataSource.reload();
+    }
+}
+
+function FilialsOnBeforeSend(e, s) {
     if (guidEmployee) {
         s.url += `?guid=${guidEmployee}`
+    }
+}
+
+function ScheduleOnBeforeSend(e, s) {
+    if (guidEmployee) {
+        s.url += `?guidEmployee=${guidEmployee}&guidFilial=${guidFilial}`
     }
 }

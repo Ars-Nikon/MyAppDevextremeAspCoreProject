@@ -12,6 +12,7 @@ namespace MyAppDevextremeAspCoreProject.Models
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
+
         [Required]
         public DateTime Date { get; set; }
 
