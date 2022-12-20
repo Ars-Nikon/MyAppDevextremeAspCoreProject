@@ -28,7 +28,7 @@ namespace MyAppDevextremeAspCoreProject.Contexts
             if (Database.EnsureCreated())
             {
                 Database.ExecuteSqlRaw("Create view EmployeeFioView as SELECT Id, (Surname+' '+Name+' '+Patronymic) as FIO from Employees");
-                Database.ExecuteSqlRaw("create view FullScheduleView as SELECT tt.Id as IdTimeTable, tt.Date as DateVisit, tt.IdEmployee as IdEmployee, \r\ntt.IdFilial as IdFilial, sch.Id as IdSchedule, sch.IdClient as IdClient, sch.StartTime as StartTime, sch.EndTime as EndTime, \r\nCASE when (sch.IdClient is not null) then (c.Surname + ' ' + c.Name + ' ' + c.Patronymic) ELSE  N'Свободно' end as Text,\r\nCASE when (sch.IdClient is not null) then 'ff0000' ELSE  '11ff00' end as Color\r\nFROM TimeTables tt\r\nLEFT JOIN ScheduleTimes sch on tt.Id = sch.IdTimeTable\r\nLEFT JOIN Clients c  on c.Id = sch.IdClient");
+                Database.ExecuteSqlRaw("create view FullScheduleView as SELECT tt.Id as IdTimeTable, tt.Date as DateVisit, tt.IdEmployee as IdEmployee, \r\n tt.IdFilial as IdFilial, sch.Id as IdSchedule, sch.IdClient as IdClient, sch.StartTime as StartTime, sch.EndTime as EndTime, \r\n CASE when (sch.IdClient is not null) then (c.Surname + ' ' + c.Name + ' ' + c.Patronymic + ' ' + ser.Name) ELSE  N'Свободно' end as Text,\r\n CASE when (sch.IdClient is not null) then 1 ELSE 2 end as Color\r\n FROM TimeTables tt\r\n LEFT JOIN ScheduleTimes sch on tt.Id = sch.IdTimeTable\r\n LEFT JOIN Clients c  on c.Id = sch.IdClient\r\n LEFT JOIN Services ser on ser.Id = sch.IdClient");
             }
         }
 

@@ -58,19 +58,60 @@
                 .Views(new[] { SchedulerViewType.Month })
                 .CurrentView(SchedulerViewType.Month)
                 .CurrentDate(DateTime.UtcNow.AddHours(3))
+                .OnCellClick("ScheduleOnCellClick")
+                .Resources(x => x.Add().UseColorAsDefault(true).FieldExpr("Color").DataSource(new[] { new { id = 1, color = "#ff0000" }, new { id = 2, color = "#00AF2C" } }))
                 .TextExpr("Text")
                 .Height(900)
                 .Editing(x => x.AllowAdding(false).AllowDragging(false).AllowDeleting(false).AllowResizing(false).AllowUpdating(false)).OnAppointmentFormOpening("CancelForm")
                 )
         </div>
         <div class="col-6">
+            <div id="Schedule">
+                @(
+                    Html.DevExtreme().DataGrid<ScheduleTime>()
+                    .ID("ScheduleTime")
+                    .Visible(false)
+                    .ShowBorders(true)
+                    .DataSource(d => d.Mvc()
+                    .Controller("Schedule")
+                    .OnBeforeSend("OnBeforeSendScheduleTime")
+                    .OnModified("UpdateScheduler")
+                    .LoadAction("GetShcedule")
+                    .InsertAction("InsertShcedule")
+                    .UpdateAction("UpdateShcedule")
+                    .DeleteAction("DeleteShcedule")
+                    .Key("Id"))
+                    .Columns(columns =>
+                    {
+                        columns.AddFor(m => m.Id).Caption("Id").FormItem(x => x.Visible(false));
+                        columns.AddFor(m => m.IdClient).Caption("IdClient");
+                        columns.AddFor(m => m.StartTime);
+                        columns.AddFor(m => m.EndTime);
+                    })
+                    .Paging(p => p.PageSize(10))
+                    .Pager(p => p
+                    .ShowPageSizeSelector(true)
+                    .AllowedPageSizes(new[] { 10, 25, 50, 100 })
+                    )
+                    .FilterRow(f => f.Visible(false))
+                    .HeaderFilter(f => { f.Visible(false); f.AllowSearch(false); })
+                    .Editing(e => e.AllowAdding(true).AllowDeleting(true).AllowUpdating(true).Mode(GridEditMode.Form))
+                    .Grouping(g => g.AutoExpandAll(false))
+                    .RemoteOperations(true)
+                    )
+            </div>
+            <div id="CreateSchedule">
+            </div>
         </div>
     </div>
 </div>
+
+<script src="~/js/Schedule.js"></script>
 <script>
+    TimeTableUrl = "@Url.ActionLink(action:"GetTimeTableIdByDate",controller:"Schedule")";
+    CreateTimeTableUrl = "@Url.ActionLink(action:"CreateTimeTable",controller:"Schedule")";
     function CancelForm(e) {
         e.cancel = true;
     }
 </script>
 
-<script src="~/js/Schedule.js"></script>

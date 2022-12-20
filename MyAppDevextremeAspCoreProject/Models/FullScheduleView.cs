@@ -6,7 +6,7 @@ namespace MyAppDevextremeAspCoreProject.Models
     public class FullScheduleView
     {
         [Required]
-        public Guid? IdTimeTable { get; set; }
+        public Guid IdTimeTable { get; set; }
 
         [Required]
         public DateTime DateVisit { get; set; }
@@ -17,18 +17,15 @@ namespace MyAppDevextremeAspCoreProject.Models
         [Required]
         public Guid IdFilial { get; set; }
 
+        public Guid? IdSchedule { get; set; }
         public Guid? IdClient { get; set; }
 
-        [Required]
-        public DateTime StartTime { get; set; }
+        public DateTime? StartTime { get; set; }
 
-        [Required]
-        public DateTime EndTime { get; set; }
+        public DateTime? EndTime { get; set; }
 
-        [Required]
-        public string Color { get; set; } = string.Empty;
+        public int? Color { get; set; }
 
-        [Required]
-        public string Text { get; set; } = string.Empty;
+        public string? Text { get; set; } = string.Empty;
     }
 }

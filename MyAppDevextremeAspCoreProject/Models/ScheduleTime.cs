@@ -22,6 +22,12 @@ namespace MyAppDevextremeAspCoreProject.Models
         [ForeignKey("Client")]
         public Guid? IdClient { get; set; }
 
+        [Required]
+        [ForeignKey("Service")]
+        public Guid IdService { get; set; }
+
+        public Service? Service { get; set; }
+
         public Client? Client { get; set; }
 
         [Required]

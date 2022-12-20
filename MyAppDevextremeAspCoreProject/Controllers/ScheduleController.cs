@@ -1,4 +1,5 @@
-﻿using DevExtreme.AspNet.Data;
+﻿using Bogus.DataSets;
+using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ using MyAppDevextremeAspCoreProject.Utilities;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
+using System.ComponentModel.DataAnnotations;
 
 namespace MyAppDevextremeAspCoreProject.Controllers
 {
@@ -47,7 +49,7 @@ namespace MyAppDevextremeAspCoreProject.Controllers
                     FullScheduleViews.
                     Where(x => x.IdFilial == Guid.Parse(guidFilial) && x.IdEmployee == Guid.Parse(guidEmployee) && x.DateVisit >= start && x.DateVisit <= end);
 
-                return await DataSourceLoader.LoadAsync(data, loadOptions); ;
+                return await DataSourceLoader.LoadAsync(data, loadOptions);
             }
             catch (Exception ex)
             {
@@ -63,12 +65,13 @@ namespace MyAppDevextremeAspCoreProject.Controllers
                 {
                     return BadRequest("Guid is null");
                 }
-                var data = _appContext.
+
+                var data = await _appContext.
                     EmployeeFilials.
                     Include(x => x.Filial).
-                    Where(x => x.EmployeeId == Guid.Parse(guid));
+                    Where(x => x.EmployeeId == Guid.Parse(guid)).ToListAsync();
 
-                return await DataSourceLoader.LoadAsync(data.Select(x => new { Id = x.FilialId, Name = x.Filial!.Name }), loadOptions);
+                return DataSourceLoader.Load(data.Select(x => new { Id = x.FilialId, Name = x.Filial!.Name }), loadOptions);
             }
             catch (Exception ex)
             {
@@ -77,14 +80,92 @@ namespace MyAppDevextremeAspCoreProject.Controllers
             }
         }
 
-
-
-        [HttpPost]
-        public async Task<IActionResult> Post(string values, [FromQuery] string? guidEmployee, [FromQuery] string? guidFilial)
+        [HttpGet]
+        public async Task<IActionResult> GetTimeTableIdByDate(DateTime date, Guid guidEmployee, Guid guidFilial)
         {
             try
             {
-             
+                var scheduleTime = await _appContext.
+                    TimeTables.
+                    Where(x => x.Date == date.Date && x.IdEmployee == guidEmployee && x.IdFilial == guidFilial).
+                    FirstOrDefaultAsync();
+
+                return Ok(scheduleTime?.Id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateTimeTable([Required] DateTime? date, [Required] Guid? guidEmployee, [Required] Guid? guidFilial)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState.GetFullErrorMessage());
+                }
+
+                var TimeTable = await _appContext.
+                             TimeTables.
+                             Where(x => x.Date == date!.Value.Date && x.IdEmployee == guidEmployee && x.IdFilial == guidFilial).
+                             FirstOrDefaultAsync();
+
+                if (TimeTable != null)
+                {
+                    return Ok(TimeTable.Id);
+                }
+
+                var newTimeTable = new TimeTable { Date = date!.Value, IdFilial = guidFilial!.Value, IdEmployee = guidEmployee!.Value };
+                await _appContext.TimeTables.AddAsync(newTimeTable);
+                await _appContext.SaveChangesAsync();
+
+                return Ok(newTimeTable.Id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        public async Task<IActionResult> GetShcedule(DataSourceLoadOptions loadOptions, [FromQuery] Guid? TimeTableId)
+        {
+            try
+            {
+                if (TimeTableId == null)
+                {
+                    return Ok("TimeTableId is null");
+                }
+                return Ok(await DataSourceLoader.LoadAsync(_appContext.ScheduleTimes.Where(x => x.IdTimeTable == TimeTableId.Value), loadOptions));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteShcedule(Guid key)
+        {
+            try
+            {
+                var scheduleTime = await _appContext
+                    .ScheduleTimes
+                    .FirstOrDefaultAsync(o => o.Id == key);
+
+                if (scheduleTime == null)
+                {
+                    return BadRequest("Id отсутствует");
+                }
+
+                _appContext.ScheduleTimes.Remove(scheduleTime);
+
+                await _appContext.SaveChangesAsync();
+
                 return Ok();
             }
             catch (Exception ex)
@@ -94,28 +175,29 @@ namespace MyAppDevextremeAspCoreProject.Controllers
             }
         }
 
-        [HttpPut]
-        public IActionResult Put(int key, string values)
+        [HttpPost]
+        public async Task<IActionResult> InsertShcedule(string values, [FromQuery] Guid? TimeTableId)
         {
-            //var appointment = _data.Appointments.First(a => a.AppointmentId == key);
-            //JsonConvert.PopulateObject(values, appointment);
+            try
+            {
+                var scheduleTime = new ScheduleTime();
+                JsonConvert.PopulateObject(values, scheduleTime);
 
-            //if (!TryValidateModel(appointment))
-            //    return BadRequest(ModelState.GetFullErrorMessage());
+                if (!TryValidateModel(scheduleTime))
+                {
+                    return BadRequest(ModelState.GetFullErrorMessage());
+                }
 
-            //_data.SaveChanges();
+                await _appContext.ScheduleTimes.AddAsync(scheduleTime);
+                await _appContext.SaveChangesAsync();
 
-            return Ok();
+                return Ok(scheduleTime);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return StatusCode(500, ex.Message);
+            }
         }
-
-        [HttpDelete]
-        public void Delete(int key)
-        {
-            //var appointment = _data.Appointments.First(a => a.AppointmentId == key);
-            //_data.Appointments.Remove(appointment);
-            //_data.SaveChanges();
-        }
-
-
     }
 }
