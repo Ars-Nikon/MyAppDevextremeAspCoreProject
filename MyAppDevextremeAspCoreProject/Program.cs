@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using MyAppDevextremeAspCoreProject.Contexts;
 using System.Text.Json.Serialization;
@@ -14,7 +15,8 @@ builder.Services
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
     });
 
-
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(x=>x.LoginPath = "/home/login");
+builder.Services.AddAuthorization();
 builder.Services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(connection));
 
 
@@ -30,7 +32,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthorization();
+app.UseAuthentication();   
+app.UseAuthorization(); 
 
 app.MapDefaultControllerRoute();
 

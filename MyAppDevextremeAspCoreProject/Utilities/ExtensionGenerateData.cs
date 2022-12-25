@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using MyAppDevextremeAspCoreProject.Models;
 using System;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace MyAppDevextremeAspCoreProject.Utilities
 {
@@ -138,6 +140,7 @@ namespace MyAppDevextremeAspCoreProject.Utilities
             var employees = GetEmployees(filials, services);
             var employeeServices = employees.SelectMany(x => x.EmployeeServices).ToList();
             var employeeFilials = employees.SelectMany(x => x.EmployeeFilials).ToList();
+            var users = GetUsers();
 
             foreach (var employee in employees)
             {
@@ -152,6 +155,16 @@ namespace MyAppDevextremeAspCoreProject.Utilities
             modelBuilder.Entity<EmployeeService>().HasData(employeeServices);
             modelBuilder.Entity<EmployeeFilial>().HasData(employeeFilials);
             modelBuilder.Entity<Client>().HasData(clients);
+            modelBuilder.Entity<User>().HasData(users);
+        }
+        private static IEnumerable<User> GetUsers()
+        {
+            var users = new List<User>()
+            {
+                new User { Id = Guid.NewGuid(), Login="Test", PasswordHash = Utils.GetSHA256("Test123")},
+                new User { Id = Guid.NewGuid(), Login="Admin",PasswordHash = Utils.GetSHA256("Admin123")}
+            };
+            return users;
         }
 
         private static IEnumerable<Client> GetClients()

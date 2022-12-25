@@ -17,14 +17,14 @@ namespace MyAppDevextremeAspCoreProject.Contexts
         public DbSet<EmployeeFilial> EmployeeFilials { get; set; } = null!;
         public DbSet<FullScheduleView> FullScheduleViews { get; set; } = null!;
         public DbSet<EmployeeFioView> EmployeeFioViews { get; set; } = null!;
-
+        public DbSet<User> Users { get; set; } = null!;
 
 
 
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
         {
-            //Database.EnsureDeleted();
+           // Database.EnsureDeleted();
             if (Database.EnsureCreated())
             {
                 Database.ExecuteSqlRaw("Create view EmployeeFioView as SELECT Id, (Surname+' '+Name+' '+Patronymic) as FIO from Employees");

@@ -1,6 +1,7 @@
 ﻿using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Data.ResponseModel;
 using DevExtreme.AspNet.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ using System;
 
 namespace MyAppDevextremeAspCoreProject.Controllers
 {
+    [Authorize]
     public class FilialController : Controller
     {
         readonly ApplicationContext _appContext;

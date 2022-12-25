@@ -1,5 +1,6 @@
 ﻿using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using Newtonsoft.Json;
 
 namespace MyAppDevextremeAspCoreProject.Controllers
 {
+    [Authorize]
     public class ServiceController : Controller
     {
         readonly ApplicationContext _appContext;

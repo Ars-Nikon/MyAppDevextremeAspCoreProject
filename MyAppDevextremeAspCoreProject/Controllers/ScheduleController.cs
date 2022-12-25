@@ -1,6 +1,7 @@
 ﻿using Bogus.DataSets;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyAppDevextremeAspCoreProject.Contexts;
@@ -13,6 +14,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MyAppDevextremeAspCoreProject.Controllers
 {
+    [Authorize]
     public class ScheduleController : Controller
     {
         readonly ApplicationContext _appContext;
